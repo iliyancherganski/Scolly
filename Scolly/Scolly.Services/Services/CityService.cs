@@ -36,7 +36,7 @@ namespace Scolly.Services.Services
             return null;
         }
 
-        public async Task<List<CityDto>> GetAllByBame(string name)
+        public async Task<List<CityDto>> GetAllByName(string name)
         {
             var cities = await _context.Cities
                 .Where(x => x.Name
@@ -64,8 +64,9 @@ namespace Scolly.Services.Services
         public async Task EditById(int id, CityDto model)
         {
             var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == id);
-            if (city != null)
+            if (city != null && await _context.Cities.FirstOrDefaultAsync(x=>x.Name == model.Name) == null)
             {
+
                 city.Name = model.Name;
                 await _context.SaveChangesAsync();
             }
@@ -74,7 +75,7 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == id);
-            if (city != null)
+            if (city != null && await _context.Users.Include(x=>x.City).FirstOrDefaultAsync(x => x.City == city) == null)
             {
                 _context.Cities.Remove(city);
                 await _context.SaveChangesAsync();

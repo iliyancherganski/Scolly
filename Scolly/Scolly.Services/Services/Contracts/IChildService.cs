@@ -7,9 +7,10 @@ namespace Scolly.Services.Services.Contracts
     {
         Task<List<CourseRequestDto>> GetAllRequests(int childId);
         Task<List<CourseDto>> GetAllCourses(int childId);
-        Task<ParentDto> GetParent(int childId);
+        Task<ParentDto?> GetParent(int childId);
         Task RequestChildRegisterToCourse(int childId, int courseId);
         //Task ManageChildRequestToCourse(CourseRequestDto courseRequestDto, bool isAccepted);
-        Task UnregisterChildToCourse(CourseRequestDto courseRequestDto);
+        Task UnregisterChildToCourse(int childId, int courseId);
+        Task ManageChildRequestToCourse(int childId, int courseId, bool isAccepted);
     }
 }

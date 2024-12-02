@@ -32,7 +32,7 @@ namespace Scolly.Services.Services
             return parentDtos;
         }
 
-        public async Task<List<ParentDto>> GetAllByBame(string name)
+        public async Task<List<ParentDto>> GetAllByName(string name)
         {
             if (!string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(name))
             {

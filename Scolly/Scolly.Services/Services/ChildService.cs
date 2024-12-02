@@ -1,19 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Scolly.Infrastructure.Data;
+using Scolly.Infrastructure.Data.Enums;
 using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Services.Contracts;
+using System.Runtime.ExceptionServices;
 
 namespace Scolly.Services.Services
 {
     public class ChildService : IChildService
     {
         private ApplicationDbContext _context;
-        //private ParentService _parentService;
+        private ParentService _parentService;
 
-        public ChildService(ApplicationDbContext context)
+
+        public ChildService(ApplicationDbContext context, ParentService parentService)
         {
             _context = context;
+            _parentService = parentService;
         }
 
         public async Task Add(ChildDto model)
@@ -39,9 +43,10 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var child = await _context.Children
-                .Include(x=>x.Parent)
-                .Include(x=>x.CourseRequests)
-                .ThenInclude(x=>x.Select(x=>x.Course))
+                .Include(x => x.Parent)
+                .ThenInclude(x => x.User)
+                .Include(x => x.CourseRequests)
+                .ThenInclude(x => x.Select(x => x.Course))
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (child != null)
             {
@@ -49,30 +54,92 @@ namespace Scolly.Services.Services
                 parent.Children.Remove(child);
                 foreach (var course in child.CourseRequests.Select(x => x.Course))
                 {
-                    //course.CourseRequests.Remove()
+                    await UnregisterChildToCourse(child.Id, course.Id);
                 }
                 await _context.SaveChangesAsync();
             }
         }
 
-        public Task EditById(int id, ChildDto model)
+        public async Task EditById(int id, ChildDto model)
         {
-            throw new NotImplementedException();
+            var child = await _context.Children
+               .Include(x => x.Parent)
+               .ThenInclude(x => x.User)
+               .Include(x => x.CourseRequests)
+               .ThenInclude(x => x.Select(x => x.Course))
+               .FirstOrDefaultAsync(x => x.Id == id);
+            if (child != null)
+            {
+                child.FirstName = model.FirstName;
+                child.LastName = model.LastName;
+                child.PhoneNumber = model.PhoneNumber;
+
+                await _context.SaveChangesAsync();
+            }
+
         }
 
-        public Task<List<ChildDto>> GetAll()
+        public async Task<List<ChildDto>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Children
+               .Include(x => x.Parent)
+               .ThenInclude(x => x.User)
+               .Include(x => x.CourseRequests)
+               .ThenInclude(x => x.Select(x => x.Course))
+               .ThenInclude(x => x.AgeGroup)
+               .Include(x => x.CourseRequests)
+               .ThenInclude(x => x.Select(x => x.Course))
+               .ThenInclude(x => x.CourseType)
+
+               .Select(x => MapData(x))
+               .ToListAsync();
         }
 
-        public Task<List<ChildDto>> GetAllByBame(string name)
+        public async Task<List<ChildDto>> GetAllByName(string name)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(name))
+            {
+                string tempName = string.Empty;
+                for (int i = 0; i < name.Length; i++)
+                {
+                    if (name[i] != ' ')
+                    {
+                        tempName += name[i];
+                    }
+                }
+                tempName = tempName.ToLower();
+
+                var dtos = await GetAll();
+
+                return dtos.Where(x => $"{x.FirstName}{x.LastName}".ToLower().Contains(tempName)).ToList();
+            }
+            return [];
         }
 
-        public Task<List<CourseDto>> GetAllCourses(int childId)
+        public async Task<List<CourseDto>> GetAllCourses(int childId)
         {
-            throw new NotImplementedException();
+            var child = await _context.Children
+               .Include(x => x.Parent)
+               .ThenInclude(x => x.User)
+               .Include(x => x.CourseRequests)
+               .ThenInclude(x => x.Select(x => x.Course))
+               .ThenInclude(x => x.AgeGroup)
+               .Include(x => x.CourseRequests)
+               .ThenInclude(x => x.Select(x => x.Course))
+               .ThenInclude(x => x.CourseType)
+               .FirstOrDefaultAsync(x => x.Id == childId);
+
+            var courseDtos = new List<CourseDto>();
+
+            if (child != null)
+            {
+                foreach (var course in child.CourseRequests.Where(x => x.Status == RequestStatus.Accepted).Select(x => x.Course))
+                {
+                    // courseDtos.Add(_courseService.MapData(course));
+                }
+            }
+
+            return courseDtos;
         }
 
         public Task<List<CourseRequestDto>> GetAllRequests(int childId)
@@ -80,46 +147,139 @@ namespace Scolly.Services.Services
             throw new NotImplementedException();
         }
 
-        public Task<ChildDto?> GetById(int id)
+        public async Task<ChildDto?> GetById(int id)
         {
-            throw new NotImplementedException();
+            var dtos = await GetAll();
+            return dtos.FirstOrDefault(x => x.Id == id);
         }
 
-        public Task<ParentDto> GetParent(int childId)
+        public async Task<ParentDto?> GetParent(int childId)
         {
-            throw new NotImplementedException();
+            var dto = await GetById(childId);
+            if (dto == null)
+            {
+                return null;
+            }
+            return dto.ParentDto;
         }
 
-        /*public Task ManageChildRequestToCourse(CourseRequestDto courseRequestDto, bool isAccepted)
+        public async Task ManageChildRequestToCourse(int childId, int courseId, bool isAccepted)
         {
-            throw new NotImplementedException();
-        }*/
+            var child = await _context.Children
+              .Include(x => x.CourseRequests)
+              .FirstOrDefaultAsync(x => x.Id == childId);
+
+            var course = await _context.Courses
+                .Include(x => x.CourseRequests)
+                .FirstOrDefaultAsync(x => x.Id == courseId);
+
+            if (child != null && course != null)
+            {
+                var courseRequest = await _context.CourseRequests.FirstOrDefaultAsync(x => x.Course == course && x.Child == child);
+                if (courseRequest != null)
+                {
+                    if (isAccepted)
+                        courseRequest.Status = RequestStatus.Accepted;
+                    else
+                        courseRequest.Status = RequestStatus.Rejected;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
 
         public ChildDto MapData(Child model)
         {
+            var courseRequestDtos = new List<CourseRequestDto>();
+            var courseRequests = _context.CourseRequests
+                .Include(x => x.Child)
+                .Include(x => x.Course)
+                .ThenInclude(x => x.AgeGroup)
+                .Include(x => x.Course)
+                .ThenInclude(x => x.CourseType)
+                .Where(x=>x.Child.Id == model.Id)
+                .ToList();
+
             var dto = new ChildDto
             {
                 Id = model.Id,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 ParentDtoId = model.ParentId,
-                //ParentDto = ,
+                ParentDto = _parentService.MapData(model.Parent),
                 PhoneNumber = model.PhoneNumber,
-                //CourseRequestsDtos = ,
             };
 
+            foreach (var courseRequest in courseRequests)
+            {
+                courseRequestDtos.Add(new CourseRequestDto()
+                {
+                    Id = courseRequest.Id,
+                    CourseDtoId = courseRequest.CourseId,
+                    //CourseDto = _courseService.Mapdata(courseRequest.Course);
+                    ChildDtoId = courseRequest.ChildId,
+                    ChildDto = dto,
+                    Status = courseRequest.Status.ToString(),
+                });
+            }
+
+            dto.CourseRequestsDtos = courseRequestDtos;
+
             return dto;
-
         }
 
-        public Task RequestChildRegisterToCourse(int childId, int courseId)
+        public async Task RequestChildRegisterToCourse(int childId, int courseId)
         {
-            throw new NotImplementedException();
+            var child = await _context.Children
+              .Include(x => x.CourseRequests)
+              .FirstOrDefaultAsync(x => x.Id == childId);
+
+            var course = await _context.Courses
+                .Include(x => x.CourseRequests)
+                .FirstOrDefaultAsync(x => x.Id == courseId);
+
+            if (child != null && course != null)
+            {
+                var courseRequest = await _context.CourseRequests.FirstOrDefaultAsync(x => x.Course == course && x.Child == child);
+                if (courseRequest == null)
+                {
+                    courseRequest = new CourseRequest()
+                    {
+                        ChildId = childId,
+                        Child = child,
+                        CourseId = courseId,
+                        Course = course,
+                        Status = RequestStatus.Pending
+                    };
+                    await _context.CourseRequests.AddAsync(courseRequest);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
 
-        public Task UnregisterChildToCourse(CourseRequestDto courseRequestDto)
+        public async Task UnregisterChildToCourse(int childId, int courseId)
         {
-            throw new NotImplementedException();
+            var child = await _context.Children
+              .Include(x => x.CourseRequests)
+              .FirstOrDefaultAsync(x => x.Id == childId);
+
+            var course = await _context.Courses
+                .Include(x => x.CourseRequests)
+                .FirstOrDefaultAsync(x => x.Id == courseId);
+
+            if (child != null && course != null)
+            {
+                var courseRequest = await _context.CourseRequests.FirstOrDefaultAsync(x => x.Course == course && x.Child == child);
+                if (courseRequest != null)
+                {
+                    child.CourseRequests.Remove(courseRequest);
+                    course.CourseRequests.Remove(courseRequest);
+                    _context.CourseRequests.Remove(courseRequest);
+
+                    await _context.CourseRequests.AddAsync(courseRequest);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

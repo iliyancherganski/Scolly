@@ -35,7 +35,7 @@ namespace Scolly.Services.Services
             return null;
         }
 
-        public async Task<List<SpecialtyDto>> GetAllByBame(string name)
+        public async Task<List<SpecialtyDto>> GetAllByName(string name)
         {
             var specialties = await _context.Specialties
                 .Where(x => x.Name
@@ -63,7 +63,7 @@ namespace Scolly.Services.Services
         public async Task EditById(int id, SpecialtyDto model)
         {
             var specialty = await _context.Specialties.FirstOrDefaultAsync(x => x.Id == id);
-            if (specialty != null)
+            if (specialty != null && await _context.Specialties.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
             {
                 specialty.Name = model.Name;
                 await _context.SaveChangesAsync();
@@ -73,8 +73,18 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var specialty = await _context.Specialties.FirstOrDefaultAsync(x => x.Id == id);
-            if (specialty != null)
+            if (specialty != null )
             {
+                var teacherSpecialty = new TeacherSpecialty();
+                foreach (var teacher in _context.Teachers.Include(x => x.TeacherSpecialties).ThenInclude(x => x.Specialty))
+                {
+                    teacherSpecialty = teacher.TeacherSpecialties.FirstOrDefault(x => x.Specialty == specialty);
+                    if (teacherSpecialty != null)
+                    {
+                        teacher.TeacherSpecialties.Remove(teacherSpecialty);
+                    }
+                }
+
                 _context.Specialties.Remove(specialty);
                 await _context.SaveChangesAsync();
             }

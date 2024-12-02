@@ -36,7 +36,7 @@ namespace Scolly.Services.Services
             return null;
         }
 
-        public async Task<List<AgeGroupDto>> GetAllByBame(string name)
+        public async Task<List<AgeGroupDto>> GetAllByName(string name)
         {
             var ageGroups = await _context.AgeGroups
                 .Where(x => x.Name
@@ -64,7 +64,7 @@ namespace Scolly.Services.Services
         public async Task EditById(int id, AgeGroupDto model)
         {
             var ageGroup = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == id);
-            if (ageGroup != null)
+            if (ageGroup != null && await _context.AgeGroups.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
             {
                 ageGroup.Name = model.Name;
                 await _context.SaveChangesAsync();
@@ -74,7 +74,7 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var ageGroup = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == id);
-            if (ageGroup != null)
+            if (ageGroup != null && await _context.Courses.Include(x=>x.AgeGroup).FirstOrDefaultAsync(x => x.AgeGroup == ageGroup) == null)
             {
                 _context.AgeGroups.Remove(ageGroup);
                 await _context.SaveChangesAsync();

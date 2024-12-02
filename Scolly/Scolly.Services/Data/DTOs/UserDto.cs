@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Scolly.Services.Data.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Scolly.Services.Data.DTOs
 {
@@ -29,5 +30,8 @@ namespace Scolly.Services.Data.DTOs
         [Required]
         [MaxLength(150)]
         public string Address { get; set; } = null!;
+
+        [Required]
+        public UserRoles Role { get; set; }
     }
 }
