@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Scolly.Infrastructures.Data;
+using Scolly.Infrastructure.Data;
 
 #nullable disable
 
 namespace Scolly.Infrasrtucture.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241125155902_initial")]
+    [Migration("20241202164154_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -158,7 +158,7 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.AgeGroup", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.AgeGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -198,7 +198,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Child", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Child", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,7 +304,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.City", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -459,7 +459,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Course", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -473,8 +473,10 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Property<int>("CourseTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -491,8 +493,6 @@ namespace Scolly.Infrasrtucture.Migrations
 
                     b.HasIndex("CourseTypeId");
 
-                    b.HasIndex("EmployeeId");
-
                     b.ToTable("Courses");
 
                     b.HasData(
@@ -501,7 +501,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             Id = 1,
                             AgeGroupId = 1,
                             CourseTypeId = 2,
-                            EmployeeId = 1,
+                            Description = "Курс по български език и литература за ученици от 5 клас, насочен към подобряване на граматиката и аналитичните умения.",
                             EndDate = new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Price = 200m,
                             StartDate = new DateTime(2023, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -511,7 +511,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             Id = 2,
                             AgeGroupId = 1,
                             CourseTypeId = 2,
-                            EmployeeId = 1,
+                            Description = "Задълбочен курс по български език и литература за 5 клас, с акцент върху подготовката за национални изпити.",
                             EndDate = new DateTime(2024, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Price = 250m,
                             StartDate = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -521,7 +521,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             Id = 3,
                             AgeGroupId = 4,
                             CourseTypeId = 5,
-                            EmployeeId = 2,
+                            Description = "Интензивен курс по немски език за ученици от 5 до 7 клас, включващ говорене, слушане и писане.",
                             EndDate = new DateTime(2024, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Price = 630m,
                             StartDate = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -531,7 +531,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             Id = 4,
                             AgeGroupId = 1,
                             CourseTypeId = 6,
-                            EmployeeId = 3,
+                            Description = "Курс по френски език за начинаещи ученици от 5 клас, съсредоточен върху основните езикови умения.",
                             EndDate = new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Price = 590m,
                             StartDate = new DateTime(2024, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -541,14 +541,14 @@ namespace Scolly.Infrasrtucture.Migrations
                             Id = 5,
                             AgeGroupId = 3,
                             CourseTypeId = 3,
-                            EmployeeId = 3,
+                            Description = "Практически курс по програмиране със C# за ученици от 7 клас, включващ основи на програмирането и реални проекти.",
                             EndDate = new DateTime(2024, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Price = 990m,
                             StartDate = new DateTime(2023, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.CourseRequest", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.CourseRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -632,7 +632,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.CourseType", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.CourseType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -682,43 +682,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Employees");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            UserId = "9789ec17-8fe9-47c2-9577-a2e86ebc85ea"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            UserId = "1d5a3070-fc27-4172-ad7c-8ef84fb88f7f"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            UserId = "0ab7ca6b-8108-4b96-a300-f998e93c1b83"
-                        });
-                });
-
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Parent", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Parent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -764,7 +728,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Specialty", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Specialty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -824,7 +788,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Teacher", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Teacher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -870,7 +834,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.TeacherCourse", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.TeacherCourse", b =>
                 {
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
@@ -917,7 +881,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.TeacherSpecialty", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.TeacherSpecialty", b =>
                 {
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
@@ -989,7 +953,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.User", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -1085,17 +1049,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "Необособен",
                             CityId = 1,
-                            ConcurrencyStamp = "3d7fa0cc-aceb-484b-8b1b-d109a8e2254c",
+                            ConcurrencyStamp = "791a205a-3ca7-4156-a7cb-ccf5a7602e6b",
                             Email = "admin@admin.bg",
                             EmailConfirmed = true,
                             FirstName = "Admin",
                             LastName = "Admin",
                             LockoutEnabled = false,
                             MiddleName = "Admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHwJxQEJqfYWBwjYrqEF6gNDuEtxt2xq5Ova7Lcwoz2OsXLTa0pRP3vlTnM61dQ0Nw==",
+                            NormalizedEmail = "ADMIN@ADMIN.BG",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAECH4Hk8jxcx4yzyftLGi6LWYGS2EvaS/iLxInK9CNDIjXFRoZZY7yBHw56dlZRyLrA==",
                             PhoneNumber = "0812345678",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "42f32251-d226-48b4-ad62-2f77b634a360",
+                            SecurityStamp = "97c3c327-5a0b-4082-a2fb-806eab196f45",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -1105,17 +1071,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Никола Габровски' 15А",
                             CityId = 3,
-                            ConcurrencyStamp = "7df0b861-078e-413e-8e7e-39ee3b6b655a",
+                            ConcurrencyStamp = "61e04a7d-2a00-4ec8-a157-28cda6db4a57",
                             Email = "teacher1@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Николай",
                             LastName = "Николов",
                             LockoutEnabled = false,
                             MiddleName = "Иванов",
-                            PasswordHash = "AQAAAAIAAYagAAAAELyHgIyrMqET9KRgwXSp1VjWeYra7rEkW665oWhBubejZFSpTs/Js3rY9+CrlWgv+Q==",
+                            NormalizedEmail = "TEACHER1@GMAIL.COM",
+                            NormalizedUserName = "TEACHER1@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJcWoKZxzvwcLTP0GLRJjtbSPBsGTcLp19z8T6+gd2dZmmCyR8qmEZqRCbmfjuoyoA==",
                             PhoneNumber = "0884672591",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "903056fd-d160-4df4-9fae-ff5ecb0a29a6",
+                            SecurityStamp = "9503bdbe-fa74-44bf-9e79-28d6b36b9fe8",
                             TwoFactorEnabled = false,
                             UserName = "teacher1@gmail.com"
                         },
@@ -1125,17 +1093,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Стоян Коледаров' 6",
                             CityId = 2,
-                            ConcurrencyStamp = "cf097074-fdd6-4682-bd52-522d76c45df8",
+                            ConcurrencyStamp = "51f6fd07-9152-49cb-9ed6-2295d60b6f97",
                             Email = "teacher2@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Преслав",
                             LastName = "Калоянов",
                             LockoutEnabled = false,
                             MiddleName = "Николаев",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKWq6Jkbfri29IVclJIlRlmDlQJaxopQo/HYtZRFP/HwzR81P8RhGYVmX1VWSqWL0g==",
+                            NormalizedEmail = "TEACHER2@GMAIL.COM",
+                            NormalizedUserName = "TEACHER2@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI4FfpBVWzwzaZmnfEf+/+xUDBZWkpNkT7hS6d9pEXBm7uySMfne+OtAOAkcwvHwxA==",
                             PhoneNumber = "0888967530",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1fbcc65c-82a9-4fd9-998a-d5c3cab0ca80",
+                            SecurityStamp = "6a811705-5478-4a7d-b1ed-7869650ca13b",
                             TwoFactorEnabled = false,
                             UserName = "teacher2@gmail.com"
                         },
@@ -1145,17 +1115,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Мусала' 12",
                             CityId = 2,
-                            ConcurrencyStamp = "11812e33-53e4-4da3-af38-02ad97097e71",
+                            ConcurrencyStamp = "2979670a-786f-4fbb-ae0f-d90a89a3e10b",
                             Email = "teacher3@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Мария",
                             LastName = "Димитрова",
                             LockoutEnabled = false,
                             MiddleName = "Атанасова",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIvbUgsc2SYqa2iAB+cUPLqll6vvVZBsg7C/JxBdhYL/HtEWjJkURrkKVZelweleEw==",
+                            NormalizedEmail = "TEACHER3@GMAIL.COM",
+                            NormalizedUserName = "TEACHER3@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHTqhJupUN+XeMUGHBq46EXlvSqQcuxH+k2dYoV4lAK888r3bswPuShkUEcC1TNzYw==",
                             PhoneNumber = "0899745867",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ee224a61-6d6b-45bb-9a85-6d4ece401ef3",
+                            SecurityStamp = "ac92daf5-44cc-463e-9345-6d0fc012849e",
                             TwoFactorEnabled = false,
                             UserName = "teacher3@gmail.com"
                         },
@@ -1165,17 +1137,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Васил Левски' 155А",
                             CityId = 4,
-                            ConcurrencyStamp = "793ed8b0-beef-4f18-8475-dbaaba407b2b",
+                            ConcurrencyStamp = "41f5ed4d-d2d8-4f69-9857-815f834d9709",
                             Email = "teacher4@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Виктор",
                             LastName = "Стефанов",
                             LockoutEnabled = false,
                             MiddleName = "Петров",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJlvI5iHHACVGQqVZZTaNbNQsC1CEFtm1fQYv3o6h5xGEGvzNBaVsfkccyeFpexsiw==",
+                            NormalizedEmail = "TEACHER4@GMAIL.COM",
+                            NormalizedUserName = "TEACHER4@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJyZf1ou0E164agbGsNDplWG69vm0lwyeKyb+u99yKjxJqE3VK38Z5z/FX4ug4ynkg==",
                             PhoneNumber = "0899745997",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b6a8029a-4795-4f4b-bbdd-001e5c71b7e6",
+                            SecurityStamp = "5a04e254-05d2-40df-9c2b-f18a59210ef5",
                             TwoFactorEnabled = false,
                             UserName = "teacher4@gmail.com"
                         },
@@ -1185,79 +1159,21 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Александър Малинов' 33",
                             CityId = 5,
-                            ConcurrencyStamp = "c2622baf-f8f4-4069-8889-849f1c7097ec",
+                            ConcurrencyStamp = "cf285580-0c1d-42be-b974-dcc00f336d27",
                             Email = "teacher5@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Емил",
                             LastName = "Долчинков",
                             LockoutEnabled = false,
                             MiddleName = "Давидов",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEhDrCmOXS7OUEQ4OxpJ4/LZ/MHRVVDNc+/q1wB73UIHatOwUXX9PvYtgEVdptJVgQ==",
+                            NormalizedEmail = "TEACHER5@GMAIL.COM",
+                            NormalizedUserName = "TEACHER5@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG+e43y900M0zk0v3XiP2QL3sFz1jceJN+dfLcVgRg9n3FFv4/4rtez/8fZhjoZmMQ==",
                             PhoneNumber = "0899745000",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ea5c4eb8-fe90-4ffb-b399-ced967f84709",
+                            SecurityStamp = "a1918373-aca8-4fb8-a4c0-6df5ea5c4e31",
                             TwoFactorEnabled = false,
                             UserName = "teacher5@gmail.com"
-                        },
-                        new
-                        {
-                            Id = "9789ec17-8fe9-47c2-9577-a2e86ebc85ea",
-                            AccessFailedCount = 0,
-                            Address = "ул. 'Петко Р. Славейков' 4Б",
-                            CityId = 1,
-                            ConcurrencyStamp = "3b5c5a92-9ff8-4c41-be95-0b559f6f7879",
-                            Email = "employee1@gmail.com",
-                            EmailConfirmed = true,
-                            FirstName = "Димитър",
-                            LastName = "Иванов",
-                            LockoutEnabled = false,
-                            MiddleName = "Спасов",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBE4Dp4PrcinX26ZrlFFtqwTidBP0Z6LKF0UrHwGciUKoXNEO27to2PS0M4Qhe/TEA==",
-                            PhoneNumber = "0823167589",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "9d93c421-c0a7-4dd3-a295-e374ba275aab",
-                            TwoFactorEnabled = false,
-                            UserName = "employee1@gmail.com"
-                        },
-                        new
-                        {
-                            Id = "1d5a3070-fc27-4172-ad7c-8ef84fb88f7f",
-                            AccessFailedCount = 0,
-                            Address = "ул. 'Плиска' 22",
-                            CityId = 6,
-                            ConcurrencyStamp = "b0b0fd31-1a1d-4a9b-b507-4c4c6a6fac83",
-                            Email = "employee2@gmail.com",
-                            EmailConfirmed = true,
-                            FirstName = "Алиса",
-                            LastName = "Нешева",
-                            LockoutEnabled = false,
-                            MiddleName = "Емилиянова",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJNqRFrIcBH4Z3rp4QcIFR1j8jpq2iyVnBg3IGEK0xaVpItsr9jK8ZcNRnWMxxc4Mg==",
-                            PhoneNumber = "0877512844",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "18d30ff6-8801-471b-b6a4-75b0ede61bcf",
-                            TwoFactorEnabled = false,
-                            UserName = "employee2@gmail.com"
-                        },
-                        new
-                        {
-                            Id = "0ab7ca6b-8108-4b96-a300-f998e93c1b83",
-                            AccessFailedCount = 0,
-                            Address = "ул. 'Преслав' 10",
-                            CityId = 4,
-                            ConcurrencyStamp = "90a1f7f1-e781-4a7a-b7b0-9a5c3b44a9f9",
-                            Email = "employee3@gmail.com",
-                            EmailConfirmed = true,
-                            FirstName = "Петър",
-                            LastName = "Нешев",
-                            LockoutEnabled = false,
-                            MiddleName = "Валентинов",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDUe52jaFJrRBRKRsysyU2GfWEq9kEOjItU2eUvTsu4R5LgtJDDRmIXOMZVcDxDF+w==",
-                            PhoneNumber = "0877512889",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2efd5431-8506-4fca-9878-ecf0c4d6ddba",
-                            TwoFactorEnabled = false,
-                            UserName = "employee3@gmail.com"
                         },
                         new
                         {
@@ -1265,17 +1181,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Опълченска' 3А",
                             CityId = 3,
-                            ConcurrencyStamp = "ae0e1daa-3ab3-47b7-9dd8-ea597af7852d",
+                            ConcurrencyStamp = "b1ec09c2-ab0a-422a-886e-ef31d8f967ff",
                             Email = "parent1@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Петър",
                             LastName = "Петров",
                             LockoutEnabled = false,
                             MiddleName = "Иванов",
-                            PasswordHash = "AQAAAAIAAYagAAAAECDe8m0ZJIM1dPq7gML7H4pexCdxwMpf9D9dRLVoO44MRHKSOMNwblGzzSOeAoeTZg==",
+                            NormalizedEmail = "PARENT1@GMAIL.COM",
+                            NormalizedUserName = "PARENT1@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIzUpIYS4lYlHEHBVCQ+yNOW3f1a4Nnab9T8UWEJUMxnL5S/BpnZsyDsAWE+BVHAOg==",
                             PhoneNumber = "0859989615",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c1ff9cca-a0f1-42ed-93f7-0071ab38574b",
+                            SecurityStamp = "0a8fa5f5-0274-49f5-8db6-030db80b821a",
                             TwoFactorEnabled = false,
                             UserName = "parent1@gmail.com"
                         },
@@ -1285,17 +1203,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Стоян Коледаров' 3А",
                             CityId = 1,
-                            ConcurrencyStamp = "5aa003f2-c399-4f70-8ee2-91b64d8b188d",
+                            ConcurrencyStamp = "055caa41-c834-480c-8a9e-eb480e470d9a",
                             Email = "parent2@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Александър",
                             LastName = "Стратиев",
                             LockoutEnabled = false,
                             MiddleName = "Иванов",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDDt264ljm7PXWX8Kk4TLbqCz2TcztYS8NCcea/DEsEc2L2QDUaMiXVnW6/yVReMkg==",
+                            NormalizedEmail = "PARENT2@GMAIL.COM",
+                            NormalizedUserName = "PARENT2@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO57dd4fZcIwdDFtF620mxRc9gmBIRYT4UWIFZ//kxpz13YXKxiN7X/yeoT/JD/N4Q==",
                             PhoneNumber = "0854700615",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "45040c90-d0f0-48c9-8e28-8502fe70d118",
+                            SecurityStamp = "f8d33b5f-71fb-412c-9dff-fc4c3f6615d1",
                             TwoFactorEnabled = false,
                             UserName = "parent2@gmail.com"
                         },
@@ -1305,17 +1225,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Петя Дубарова' 16Б",
                             CityId = 6,
-                            ConcurrencyStamp = "3ca63edd-e434-4d26-820b-a74018828b0c",
+                            ConcurrencyStamp = "6fe423eb-c560-48f0-ac6b-7a62334db61c",
                             Email = "parent3@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Виктория",
                             LastName = "Ангелова",
                             LockoutEnabled = false,
                             MiddleName = "Николаева",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE6r1hBrpuRNFZMzV2nVtV+QuVXqnZQJ0MlNbC2I4hVi29ya+IbD28qCf9EnroqO9w==",
+                            NormalizedEmail = "PARENT3@GMAIL.COM",
+                            NormalizedUserName = "PARENT3@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOTpUMahO9ncVzFOtmAlbW6j615m2Gu90jmgP93CR1IJUNEv0d0/UyiVG7vGogKZTg==",
                             PhoneNumber = "0854789615",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7887f6d7-0d06-4d30-9d2d-14b45ef4ff77",
+                            SecurityStamp = "e4564128-8626-4d5c-ac02-c2b016fa3b6f",
                             TwoFactorEnabled = false,
                             UserName = "parent3@gmail.com"
                         },
@@ -1325,17 +1247,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Освобождение' 3Б",
                             CityId = 4,
-                            ConcurrencyStamp = "45479299-0cd1-4e68-bca4-c89bc55a2f53",
+                            ConcurrencyStamp = "c63e78df-0edd-4fa9-9053-c7ea3bf2a220",
                             Email = "parent4@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Девора",
                             LastName = "Кирилова",
                             LockoutEnabled = false,
                             MiddleName = "Кирилова",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEQvHYPMblghgpXIAbcDMqUNlvy+zH8iaBT3E4iIVvY5wjEM5ghGuQ74gw4yv2qBRw==",
+                            NormalizedEmail = "PARENT4@GMAIL.COM",
+                            NormalizedUserName = "PARENT4@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG4r1X2pc9wKicXdLspAMa4LeCoanelnOuSbLJ2Q1pPAL+SudAzYSKQG1J3zyFUHvQ==",
                             PhoneNumber = "0865789488",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c12e4d11-5862-4666-b1b4-18042d8c53be",
+                            SecurityStamp = "b7449628-4736-4d01-91c8-3a5b70e57d70",
                             TwoFactorEnabled = false,
                             UserName = "parent4@gmail.com"
                         },
@@ -1345,17 +1269,19 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Георги Бенковски' 25",
                             CityId = 4,
-                            ConcurrencyStamp = "893afaf3-eef7-4981-b921-7dc84307bba4",
+                            ConcurrencyStamp = "a3de3569-1e53-40a0-8b34-07ed1555b97e",
                             Email = "parent5@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Даниела",
                             LastName = "Петкова",
                             LockoutEnabled = false,
                             MiddleName = "Сергеева",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN3JOx2GCjqilhdzWisWNSOLo2ZuWjvcUVMQcX4RQTTmWYFeCthHSRd39fUrZHVFUw==",
+                            NormalizedEmail = "PARENT5@GMAIL.COM",
+                            NormalizedUserName = "PARENT5@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAENwdxLw2KJ3qUgxu1MBw9oYQjFD1PZcQCiqEwNYsAJhU00D9C+3rQz6E0NkrQsaJ9w==",
                             PhoneNumber = "0813528746",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b0fa1290-654e-49db-9ace-cd1672925199",
+                            SecurityStamp = "9e105f7f-d566-4505-a956-a9b3e769fcfb",
                             TwoFactorEnabled = false,
                             UserName = "parent5@gmail.com"
                         });
@@ -1372,7 +1298,7 @@ namespace Scolly.Infrasrtucture.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", null)
+                    b.HasOne("Scolly.Infrastructure.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1381,7 +1307,7 @@ namespace Scolly.Infrasrtucture.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", null)
+                    b.HasOne("Scolly.Infrastructure.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1396,7 +1322,7 @@ namespace Scolly.Infrasrtucture.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", null)
+                    b.HasOne("Scolly.Infrastructure.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1405,16 +1331,16 @@ namespace Scolly.Infrasrtucture.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", null)
+                    b.HasOne("Scolly.Infrastructure.Data.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Child", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Child", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Parent", "Parent")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Parent", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1423,45 +1349,37 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Course", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Course", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.AgeGroup", "AgeGroup")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.AgeGroup", "AgeGroup")
                         .WithMany()
                         .HasForeignKey("AgeGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Scolly.Infrastructures.Data.Models.CourseType", "CourseType")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.CourseType", "CourseType")
                         .WithMany("Courses")
                         .HasForeignKey("CourseTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Employee", "Employee")
-                        .WithMany("Courses")
-                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AgeGroup");
 
                     b.Navigation("CourseType");
-
-                    b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.CourseRequest", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.CourseRequest", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Child", "Child")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Child", "Child")
                         .WithMany("CourseRequests")
                         .HasForeignKey("ChildId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Course", "Course")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Course", "Course")
                         .WithMany("CourseRequests")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Child");
@@ -1469,9 +1387,9 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Employee", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Parent", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", "User")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1480,9 +1398,9 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Parent", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Teacher", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", "User")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1491,26 +1409,15 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Teacher", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.TeacherCourse", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.TeacherCourse", b =>
-                {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Course", "Course")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Course", "Course")
                         .WithMany("TeachersCourse")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Teacher", "Teacher")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Teacher", "Teacher")
                         .WithMany("TeacherCourses")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1521,15 +1428,15 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.TeacherSpecialty", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.TeacherSpecialty", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Specialty", "Specialty")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Specialty", "Specialty")
                         .WithMany("TeachersSpecialty")
                         .HasForeignKey("SpecialtyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Scolly.Infrastructures.Data.Models.Teacher", "Teacher")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.Teacher", "Teacher")
                         .WithMany("TeacherSpecialties")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1540,9 +1447,9 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.User", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.User", b =>
                 {
-                    b.HasOne("Scolly.Infrastructures.Data.Models.City", "City")
+                    b.HasOne("Scolly.Infrastructure.Data.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1551,39 +1458,34 @@ namespace Scolly.Infrasrtucture.Migrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Child", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Child", b =>
                 {
                     b.Navigation("CourseRequests");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Course", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Course", b =>
                 {
                     b.Navigation("CourseRequests");
 
                     b.Navigation("TeachersCourse");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.CourseType", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.CourseType", b =>
                 {
                     b.Navigation("Courses");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Employee", b =>
-                {
-                    b.Navigation("Courses");
-                });
-
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Parent", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Parent", b =>
                 {
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Specialty", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Specialty", b =>
                 {
                     b.Navigation("TeachersSpecialty");
                 });
 
-            modelBuilder.Entity("Scolly.Infrastructures.Data.Models.Teacher", b =>
+            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Teacher", b =>
                 {
                     b.Navigation("TeacherCourses");
 

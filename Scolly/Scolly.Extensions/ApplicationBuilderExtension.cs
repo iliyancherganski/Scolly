@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Scolly.Infrastructures.Data.Models;
+﻿/*using Microsoft.AspNetCore.Identity;
+using Scolly.Infrastructure.Data.Models;
 
 namespace Scolly.Extensions
 {
@@ -30,12 +28,6 @@ namespace Scolly.Extensions
                     await roleManager.CreateAsync(userRole);
                 }
 
-                if (!await roleManager.RoleExistsAsync("Employee"))
-                {
-                    IdentityRole userRole = new IdentityRole("Employee");
-                    await roleManager.CreateAsync(userRole);
-                }
-
                 if (!await roleManager.RoleExistsAsync("Parent"))
                 {
                     IdentityRole userRole = new IdentityRole("Parent");
@@ -49,7 +41,6 @@ namespace Scolly.Extensions
                 }
 
                 int teachersCount = 5;
-                int employeesCount = 3;
                 int parentsCount = 5;
 
                 // TEACHERS
@@ -59,16 +50,6 @@ namespace Scolly.Extensions
                     if (teacher != null)
                     {
                         await userManager.AddToRoleAsync(teacher, "Teacher");
-                    }
-                }
-
-                // EMPLOYEES
-                for (int i = 1; i <= employeesCount; i++)
-                {
-                    User? employee1 = await userManager.FindByEmailAsync($"employee{i}@gmail.com");
-                    if (employee1 != null)
-                    {
-                        await userManager.AddToRoleAsync(employee1, "Employee");
                     }
                 }
 
@@ -90,4 +71,4 @@ namespace Scolly.Extensions
             return app;
         }
     }
-}
+}*/

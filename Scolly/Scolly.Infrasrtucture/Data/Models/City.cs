@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Scolly.Infrastructures.Data.Models
+namespace Scolly.Infrastructure.Data.Models
 {
     public class City
     {

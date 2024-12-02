@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Scolly.Infrastructures.Data.Enums;
+using Scolly.Infrastructure.Data.Enums;
 
-namespace Scolly.Infrastructures.Data.Models
+namespace Scolly.Infrastructure.Data.Models
 {
     public class CourseRequest
     {

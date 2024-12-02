@@ -1,4 +1,4 @@
-﻿namespace Scolly.Infrastructures.Data.Enums
+﻿namespace Scolly.Infrastructure.Data.Enums
 {
     public enum RequestStatus
     {

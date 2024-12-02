@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Scolly.Infrastructures.Data.Models;
-using System.Collections.Generic;
+using Scolly.Infrastructure.Data.Models;
 
-namespace Scolly.Infrastructures.Data.Configurations
+namespace Scolly.Infrastructure.Data.Configurations
 {
     public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
@@ -36,56 +35,56 @@ namespace Scolly.Infrastructures.Data.Configurations
                 new Course
                 {
                     Id = 1,
-                    EmployeeId = 1,
-                    AgeGroupId = 1, 
+                    AgeGroupId = 1,
                     CourseTypeId = 2,
                     StartDate = new DateTime(2023, 10, 2),
                     EndDate = new DateTime(2024, 1, 15),
                     Price = 200,
+                    Description = "Курс по български език и литература за ученици от 5 клас, насочен към подобряване на граматиката и аналитичните умения."
                 },
 
                 new Course
                 {
                     Id = 2,
-                    EmployeeId = 1,
                     AgeGroupId = 1,
                     CourseTypeId = 2,
                     StartDate = new DateTime(2024, 1, 2),
                     EndDate = new DateTime(2024, 4, 15),
                     Price = 250,
+                    Description = "Задълбочен курс по български език и литература за 5 клас, с акцент върху подготовката за национални изпити."
                 },
 
                 new Course
                 {
                     Id = 3,
-                    EmployeeId = 2,
                     AgeGroupId = 4,
                     CourseTypeId = 5,
                     StartDate = new DateTime(2024, 1, 2),
                     EndDate = new DateTime(2024, 6, 15),
                     Price = 630,
+                    Description = "Интензивен курс по немски език за ученици от 5 до 7 клас, включващ говорене, слушане и писане."
                 },
 
                 new Course
                 {
                     Id = 4,
-                    EmployeeId = 3,
                     AgeGroupId = 1,
                     CourseTypeId = 6,
                     StartDate = new DateTime(2024, 10, 11),
                     EndDate = new DateTime(2025, 5, 25),
                     Price = 590,
+                    Description = "Курс по френски език за начинаещи ученици от 5 клас, съсредоточен върху основните езикови умения."
                 },
 
                 new Course
                 {
                     Id = 5,
-                    EmployeeId = 3,
                     AgeGroupId = 3,
                     CourseTypeId = 3,
                     StartDate = new DateTime(2023, 11, 10),
                     EndDate = new DateTime(2024, 6, 29),
                     Price = 990,
+                    Description = "Практически курс по програмиране със C# за ученици от 7 клас, включващ основи на програмирането и реални проекти."
                 },
             };
 

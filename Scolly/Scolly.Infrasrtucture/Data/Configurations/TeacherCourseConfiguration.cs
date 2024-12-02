@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Scolly.Infrastructures.Data.Models;
+using Scolly.Infrastructure.Data.Models;
 
-namespace Scolly.Infrastructures.Data.Configurations
+namespace Scolly.Infrastructure.Data.Configurations
 {
     public class TeacherCourseConfiguration : IEntityTypeConfiguration<TeacherCourse>
     {

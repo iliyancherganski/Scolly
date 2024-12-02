@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.4" />
@@ -18,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Scolly.Extensions\Scolly.Extensions.csproj" />
     <ProjectReference Include="..\Scolly.Infrasrtucture\Scolly.Infrasrtucture.csproj" />
+    <ProjectReference Include="..\Scolly.Services\Scolly.Services.csproj" />
   </ItemGroup>
 
 </Project>

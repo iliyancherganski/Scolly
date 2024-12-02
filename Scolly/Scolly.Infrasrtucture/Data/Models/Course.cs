@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Scolly.Infrastructures.Data.Models
+namespace Scolly.Infrastructure.Data.Models
 {
     public class Course
     {
@@ -19,11 +19,11 @@ namespace Scolly.Infrastructures.Data.Models
         public DateTime EndDate { get; set; }
 
         [Required]
-        public decimal Price { get; set; }
+        [MaxLength(400)]
+        public string Description { get; set; } = null!;
 
-        [ForeignKey(nameof(Employee))]
-        public int EmployeeId { get; set; }
-        public Employee Employee { get; set; } = null!;
+        [Required]
+        public decimal Price { get; set; }
 
         [ForeignKey(nameof(CourseType))]
         public int CourseTypeId { get; set; }

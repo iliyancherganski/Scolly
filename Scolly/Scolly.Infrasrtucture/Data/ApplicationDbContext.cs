@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Scolly.Infrastructures.Data.Configurations;
-using Scolly.Infrastructures.Data.Models;
+using Scolly.Infrastructure.Data.Configurations;
+using Scolly.Infrastructure.Data.Models;
 
-namespace Scolly.Infrastructures.Data
+namespace Scolly.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
@@ -15,7 +15,6 @@ namespace Scolly.Infrastructures.Data
         public DbSet<Parent> Parents { get; set; }
         public DbSet<Child> Children { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<CourseRequest> CourseRequests { get; set; }
         public DbSet<AgeGroup> AgeGroups { get; set; }
@@ -33,7 +32,6 @@ namespace Scolly.Infrastructures.Data
             builder.ApplyConfiguration(new CourseConfiguration());
             builder.ApplyConfiguration(new CourseTypeConfiguration());
             builder.ApplyConfiguration(new CourseRequestConfiguration());
-            builder.ApplyConfiguration(new EmployeeConfiguration());
             builder.ApplyConfiguration(new ParentConfiguration());
             builder.ApplyConfiguration(new SpecialityConfiguration());
             builder.ApplyConfiguration(new TeacherConfiguration());
