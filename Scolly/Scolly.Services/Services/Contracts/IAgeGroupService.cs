@@ -4,7 +4,7 @@ using Scolly.Services.Services.Contracts;
 
 namespace Scolly.Services.Services.Interfaces
 {
-    public interface IAgeGroupService : IBaseService<AgeGroupDto, AgeGroup>
+    public interface IAgeGroupService : IBaseService<AgeGroupDto>
     {
     }
 }

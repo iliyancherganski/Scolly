@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Scolly.Services.Services.Contracts
 {
-    public interface IParentService : IBaseService<ParentDto, Parent>
+    public interface IParentService : IBaseService<ParentDto>
     {
         Task<List<ChildDto>> GetAllChildren(int parentId);
     }

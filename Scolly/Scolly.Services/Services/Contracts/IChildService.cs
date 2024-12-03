@@ -3,7 +3,7 @@ using Scolly.Services.Data.DTOs;
 
 namespace Scolly.Services.Services.Contracts
 {
-    public interface IChildService : IBaseService<ChildDto, Child>
+    public interface IChildService : IBaseService<ChildDto>
     {
         Task<List<CourseRequestDto>> GetAllRequests(int childId);
         Task<List<CourseDto>> GetAllCourses(int childId);

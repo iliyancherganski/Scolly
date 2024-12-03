@@ -21,7 +21,11 @@ namespace Scolly.Services.Services
             var ageGroupDtos = new List<AgeGroupDto>();
             foreach (var ageGroup in ageGroups)
             {
-                ageGroupDtos.Add(MapData(ageGroup));
+                var ageGroupDto = await MapData(ageGroup.Id);
+                if (ageGroupDto != null)
+                {
+                    ageGroupDtos.Add(ageGroupDto);
+                }
             }
             return ageGroupDtos;
         }
@@ -31,7 +35,7 @@ namespace Scolly.Services.Services
             var ageGroup = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == id);
             if (ageGroup != null)
             {
-                return MapData(ageGroup);
+                return await MapData(ageGroup.Id);
             }
             return null;
         }
@@ -46,16 +50,20 @@ namespace Scolly.Services.Services
             var ageGroupDtos = new List<AgeGroupDto>();
             foreach (var ageGroup in ageGroups)
             {
-                ageGroupDtos.Add(MapData(ageGroup));
+                var ageGroupDto = await MapData(ageGroup.Id);
+                if (ageGroupDto != null)
+                {
+                    ageGroupDtos.Add(ageGroupDto);
+                }
             }
             return ageGroupDtos;
         }
 
         public async Task Add(AgeGroupDto model)
         {
-            if (model != null && _context.AgeGroups.FirstOrDefault(x=>x.Name.ToLower() == model.Name.ToLower()) != null)
+            if (model != null && _context.AgeGroups.FirstOrDefault(x => x.Name.ToLower() == model.Name.ToLower()) != null)
             {
-                var ageGoup = new AgeGroup {  Name = model.Name };
+                var ageGoup = new AgeGroup { Name = model.Name };
                 await _context.AgeGroups.AddAsync(ageGoup);
                 await _context.SaveChangesAsync();
             }
@@ -74,15 +82,21 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var ageGroup = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == id);
-            if (ageGroup != null && await _context.Courses.Include(x=>x.AgeGroup).FirstOrDefaultAsync(x => x.AgeGroup == ageGroup) == null)
+            if (ageGroup != null && await _context.Courses.Include(x => x.AgeGroup).FirstOrDefaultAsync(x => x.AgeGroup == ageGroup) == null)
             {
                 _context.AgeGroups.Remove(ageGroup);
                 await _context.SaveChangesAsync();
             }
         }
 
-        public AgeGroupDto MapData(AgeGroup model)
+        public async Task<AgeGroupDto?> MapData(int modelId)
         {
+            var model = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == modelId);
+            if (model == null)
+            {
+                return null;
+            }
+
             return new AgeGroupDto { Id = model.Id, Name = model.Name };
         }
     }

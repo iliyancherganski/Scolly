@@ -21,7 +21,11 @@ namespace Scolly.Services.Services
             var cityDtos = new List<CityDto>();
             foreach (var city in cities)
             {
-                cityDtos.Add(MapData(city));
+                var cityDto = await MapData(city.Id);
+                if (cityDto != null)
+                {
+                    cityDtos.Add(cityDto);
+                }
             }
             return cityDtos;
         }
@@ -31,7 +35,11 @@ namespace Scolly.Services.Services
             var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == id);
             if (city != null)
             {
-                return MapData(city);
+                var cityDto = await MapData(city.Id);
+                if (cityDto != null)
+                {
+                    return cityDto;
+                }
             }
             return null;
         }
@@ -46,7 +54,11 @@ namespace Scolly.Services.Services
             var cityDtos = new List<CityDto>();
             foreach (var city in cities)
             {
-                cityDtos.Add(MapData(city));
+                var cityDto = await MapData(city.Id);
+                if (cityDto != null)
+                {
+                    cityDtos.Add(cityDto);
+                }
             }
             return cityDtos;
         }
@@ -64,7 +76,7 @@ namespace Scolly.Services.Services
         public async Task EditById(int id, CityDto model)
         {
             var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == id);
-            if (city != null && await _context.Cities.FirstOrDefaultAsync(x=>x.Name == model.Name) == null)
+            if (city != null && await _context.Cities.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
             {
 
                 city.Name = model.Name;
@@ -75,15 +87,21 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == id);
-            if (city != null && await _context.Users.Include(x=>x.City).FirstOrDefaultAsync(x => x.City == city) == null)
+            if (city != null && await _context.Users.Include(x => x.City).FirstOrDefaultAsync(x => x.City == city) == null)
             {
                 _context.Cities.Remove(city);
                 await _context.SaveChangesAsync();
             }
         }
 
-        public CityDto MapData(City model)
+        public async Task<CityDto?> MapData(int modelId)
         {
+            var model = await _context.Cities.FirstOrDefaultAsync(x => x.Id == modelId);
+            if (model == null)
+            {
+                return null;
+            }
+
             return new CityDto { Id = model.Id, Name = model.Name };
         }
     }

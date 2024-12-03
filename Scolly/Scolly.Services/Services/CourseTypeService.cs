@@ -26,7 +26,11 @@ namespace Scolly.Services.Services
             var courseTypeDtos = new List<CourseTypeDto>();
             foreach (var courseType in courseTypes)
             {
-                courseTypeDtos.Add(MapData(courseType));
+                var courseTypeDto = await MapData(courseType.Id);
+                if (courseTypeDto != null)
+                {
+                    courseTypeDtos.Add(courseTypeDto);
+                }
             }
             return courseTypeDtos;
         }
@@ -36,7 +40,11 @@ namespace Scolly.Services.Services
             var courseType = await _context.CourseTypes.FirstOrDefaultAsync(x => x.Id == id);
             if (courseType != null)
             {
-                return MapData(courseType);
+                var courseTypeDto = await MapData(courseType.Id);
+                if (courseTypeDto != null)
+                {
+                   return courseTypeDto;
+                }
             }
             return null;
         }
@@ -48,12 +56,16 @@ namespace Scolly.Services.Services
                     .ToLower()
                     .Contains(name.ToLower()))
                 .ToListAsync();
-            var courseTypeDtso = new List<CourseTypeDto>();
+            var courseTypeDtos = new List<CourseTypeDto>();
             foreach (var courseType in courseTypes)
             {
-                courseTypeDtso.Add(MapData(courseType));
+                var courseTypeDto = await MapData(courseType.Id);
+                if (courseTypeDto != null)
+                {
+                    courseTypeDtos.Add(courseTypeDto);
+                }
             }
-            return courseTypeDtso;
+            return courseTypeDtos;
         }
 
         public async Task Add(CourseTypeDto model)
@@ -86,8 +98,14 @@ namespace Scolly.Services.Services
             }
         }
 
-        public CourseTypeDto MapData(CourseType model)
+        public async Task<CourseTypeDto?> MapData(int modelId)
         {
+            var model = await _context.CourseTypes.FirstOrDefaultAsync(x => x.Id == modelId);
+            if (model == null)
+            {
+                return null;
+            }
+
             return new CourseTypeDto() { Id = model.Id, Name = model.Name };
         }
     }

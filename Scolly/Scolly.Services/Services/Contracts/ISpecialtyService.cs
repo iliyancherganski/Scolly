@@ -3,7 +3,7 @@ using Scolly.Services.Data.DTOs;
 
 namespace Scolly.Services.Services.Contracts
 {
-    public interface ISpecialtyService : IBaseService<SpecialtyDto, Specialty>
+    public interface ISpecialtyService : IBaseService<SpecialtyDto>
     {
     }
 }

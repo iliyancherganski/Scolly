@@ -4,7 +4,7 @@ using Scolly.Services.Data.DTOs;
 
 namespace Scolly.Services.Services.Contracts
 {
-    public interface ICourseTypeService : IBaseService<CourseTypeDto, CourseType>
+    public interface ICourseTypeService : IBaseService<CourseTypeDto>
     {
     }
 }

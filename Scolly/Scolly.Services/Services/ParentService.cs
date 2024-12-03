@@ -1,15 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 using Scolly.Infrastructure.Data;
 using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
+using Scolly.Services.Data.Enums;
 using Scolly.Services.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scolly.Services.Services
 {
@@ -17,40 +12,53 @@ namespace Scolly.Services.Services
     {
         // ctros when done
         private ApplicationDbContext _context;
-        private ChildService _childService;
-        //private UserService _userService;
 
+        private IChildService _childService;
+        private IUserService _userService;
+
+        public ParentService(ApplicationDbContext context, IChildService childService, IUserService userService)
+        {
+            _context = context;
+            _childService = childService;
+            _userService = userService;
+        }
 
         public async Task<List<ParentDto>> GetAll()
         {
-            var parents = await _context.Parents
-                .Include(x => x.User)
-                .Include(x => x.Children)
-                .ToListAsync();
-
-            var parentDtos = parents.Select(MapData).ToList();
+            var parents = await _context.Parents.ToListAsync();
+            var parentDtos = new List<ParentDto>();
+            foreach (var parentDto in parents.Select(async x => await MapData(x.Id)))
+            {
+                if (parentDto.Result != null)
+                {
+                    parentDtos.Add(parentDto.Result);
+                }
+            }
             return parentDtos;
         }
 
         public async Task<List<ParentDto>> GetAllByName(string name)
         {
-            if (!string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(name))
+            var parentDtos = new List<ParentDto>();
+            var userDtos = await _userService.GetAllByName(name);
+
+            var parent = new Parent();
+            var parentDto = new ParentDto();
+            foreach (var userDto in userDtos)
             {
-                string tempName = string.Empty;
-                for (int i = 0; i < name.Length; i++)
+                parent = await _context.Parents
+                    .Include(x => x.User)
+                    .FirstOrDefaultAsync(x => x.UserId == userDto.Id);
+                if (parent != null)
                 {
-                    if (name[i] != ' ')
+                    parentDto = await MapData(parent.Id);
+                    if (parentDto != null)
                     {
-                        tempName += name[i];
+                        parentDtos.Add(parentDto);
                     }
                 }
-                tempName = tempName.ToLower();
-
-                var dtos = await GetAll();
-
-                return dtos.Where(x => $"{x.UserDto.FirstName}{x.UserDto.LastName}".ToLower().Contains(tempName)).ToList();
             }
-            return new List<ParentDto> { };
+            return parentDtos;
         }
 
         public async Task<List<ChildDto>> GetAllChildren(int parentId)
@@ -82,15 +90,39 @@ namespace Scolly.Services.Services
             throw new NotImplementedException();
         }
 
-        public ParentDto MapData(Parent model)
+        public async Task<ParentDto?> MapData(int modelId)
         {
-            var dto = new ParentDto
+            var model = await _context.Parents
+                .Include(x => x.User)
+                .ThenInclude(x => x.City)
+                .Include(x => x.Children)
+                .FirstOrDefaultAsync(x => x.Id == modelId);
+
+            if (model == null)
             {
-                Id = model.Id,
-                UserDtoId = model.UserId,
-                //UserDto = _userService.MapData(model.User)
-                ChildDtos = model.Children.Select(_childService.MapData).ToList(),
-            };
+                return null;
+            }
+
+            var dto = new ParentDto { Id = model.Id, };
+
+            var childDtos = new List<ChildDto>();
+            foreach (var childDto in model.Children.Select(x => _childService.MapData(x.Id)))
+            {
+                if (childDto != null && childDto.Result != null)
+                {
+                    childDtos.Add(childDto.Result);
+                }
+            }
+            dto.ChildDtos = childDtos;
+
+            var userDto = _userService.MapData(model.User.Id).Result;
+            if (userDto != null)
+            {
+                dto.UserDtoId = userDto.Id;
+                dto.UserDto = userDto;
+            }
+
+            dto.UserDto.Role = UserRoles.Parent;
 
             return dto;
         }

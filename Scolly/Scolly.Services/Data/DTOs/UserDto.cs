@@ -31,6 +31,13 @@ namespace Scolly.Services.Data.DTOs
         [MaxLength(150)]
         public string Address { get; set; } = null!;
 
+        [Phone]
+        public string? PhoneNumber { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Password { get; set; } = null!;
+
         [Required]
         public UserRoles Role { get; set; }
     }
