@@ -82,14 +82,26 @@ namespace Scolly.Services.Services
 
         }
 
-        public Task DeleteById(int id)
+        public async Task DeleteById(int id)
         {
-            throw new NotImplementedException();
+            var parent = await _context.Parents
+                .Include(x=>x.Children)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (parent == null) return;
+
+            foreach (var child in parent.Children)
+            {
+                await _childService.DeleteById(child.Id);
+            }
+
+            string userId = parent.UserId;
+            _context.Parents.Remove(parent);
+            await _userService.DeleteUserById(userId);
         }
 
-        public Task EditById(int id, ParentDto model)
+        public async Task EditById(int id, ParentDto model)
         {
-            throw new NotImplementedException();
+            await _userService.EditUserById(model.UserDtoId, model.UserDto);
         }
 
         public async Task<ParentDto?> MapData(int modelId)

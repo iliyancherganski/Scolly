@@ -76,8 +76,17 @@ namespace Scolly.Services.Services
 
             foreach (var ts in teacherSpecialties)
             {
-                teacher.TeacherSpecialties.Remove(ts);
                 _context.TeachersSpecialties.Remove(ts);
+            }
+
+            var teacherCourses = await _context.TeachersCourses
+                .Include(x=>x.Course)
+                .Where(x => x.TeacherId == teacher.Id).ToListAsync();
+
+            foreach (var tc in teacherCourses)
+            {
+                tc.Course.TeachersCourse.Remove(tc);
+                _context.TeachersCourses.Remove(tc);
             }
 
             string userId = teacher.UserId;
