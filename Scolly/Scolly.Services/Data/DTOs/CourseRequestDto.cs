@@ -13,6 +13,6 @@ namespace Scolly.Services.Data.DTOs
         public int CourseDtoId { get; set; } 
         public CourseDto CourseDto { get; set; } = null!;
 
-        public string Status { get; set; } = null!;
+        public RequestStatusDto Status { get; set; }
     }
 }

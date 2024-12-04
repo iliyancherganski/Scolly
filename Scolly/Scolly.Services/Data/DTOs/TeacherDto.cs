@@ -12,7 +12,7 @@ namespace Scolly.Services.Data.DTOs
         public string UserDtoId { get; set; } = null!;
         public UserDto UserDto { get; set; } = null!;
 
-        public List<TeacherCourseDto> TeacherCourseDtos { get; set; } = new List<TeacherCourseDto>();
-        public List<TeacherSpecialtyDto> TeacherSpecialtyDtos { get; set; } = new List<TeacherSpecialtyDto>();
+        public List<CourseDto> CourseDtos { get; set; } = new List<CourseDto>();
+        public List<SpecialtyDto> SpecialtyDtos { get; set; } = new List<SpecialtyDto>();
     }
 }

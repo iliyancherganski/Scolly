@@ -8,7 +8,7 @@ namespace Scolly.Services.Services
 {
     public class AgeGroupService : IAgeGroupService
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public AgeGroupService(ApplicationDbContext context)
         {

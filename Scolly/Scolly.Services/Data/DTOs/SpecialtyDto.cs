@@ -15,7 +15,5 @@ namespace Scolly.Services.Data.DTOs
         [Required]
         [StringLength(50)]
         public string Name { get; set; } = null!;
-
-        public List<TeacherSpecialtyDto> TeacherSpecialtyDtos { get; set; } = new List<TeacherSpecialtyDto>();
     }
 }

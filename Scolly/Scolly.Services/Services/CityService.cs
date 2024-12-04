@@ -8,7 +8,7 @@ namespace Scolly.Services.Services
 {
     public class CityService : ICityService
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public CityService(ApplicationDbContext context)
         {

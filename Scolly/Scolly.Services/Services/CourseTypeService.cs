@@ -13,7 +13,7 @@ namespace Scolly.Services.Services
 {
     public class CourseTypeService : ICourseTypeService
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public CourseTypeService(ApplicationDbContext context)
         {

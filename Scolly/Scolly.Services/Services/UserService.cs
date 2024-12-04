@@ -11,8 +11,8 @@ namespace Scolly.Services.Services
 {
     public class UserService : IUserService
     {
-        private ApplicationDbContext _context;
-        private ICityService _cityService;
+        private readonly ApplicationDbContext _context;
+        private readonly ICityService _cityService;
 
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
@@ -30,14 +30,34 @@ namespace Scolly.Services.Services
         //private readonly ILogger<LoginViewModel> _logger;
 
 
-        public async Task DeleteUserById(int id)
+        public async Task DeleteUserById(string id)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
         }
 
         public async Task EditUserById(string id, UserDto model)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null) return;
+
+            user.FirstName = model.FirstName;
+            user.MiddleName = model.MiddleName;
+            user.LastName = model.LastName;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;
+            var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == model.CityDtoId);
+            if (city != null)
+            {
+                user.CityId = city.Id;
+                user.City = city;
+            }
+            user.CityId = model.CityDtoId;
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<UserDto>> GetAllByName(string name)
@@ -127,7 +147,7 @@ namespace Scolly.Services.Services
             return dto;
         }
 
-        public async Task RegitserNewUser(UserDto model)
+        public async Task<string?> RegisterNewUser(UserDto model)
         {
             if (await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email) == null)
             {
@@ -154,9 +174,10 @@ namespace Scolly.Services.Services
 
                 if (result.Succeeded)
                 {
-                    await _context.SaveChangesAsync();
+                    return user.Id;
                 }
             }
+            return null;
         }
 
         private User CreateUser()

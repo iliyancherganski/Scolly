@@ -1,13 +1,13 @@
 ﻿namespace Scolly.Services.Services.Contracts
 {
-    public interface IBaseService<T1>
+    public interface IBaseService<T>
     {
-        Task<List<T1>> GetAll();
-        Task<List<T1>> GetAllByName(string name);
-        Task<T1?> GetById(int id);
-        abstract Task Add(T1 model);
-        Task EditById(int id, T1 model);
+        Task<List<T>> GetAll();
+        Task<List<T>> GetAllByName(string name);
+        Task<T?> GetById(int id);
+        Task Add(T model);
+        Task EditById(int id, T model);
         Task DeleteById(int id);
-        Task<T1?> MapData(int modelId);
+        Task<T?> MapData(int modelId);
     }
 }

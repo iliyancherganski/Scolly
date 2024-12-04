@@ -8,7 +8,7 @@ namespace Scolly.Services.Services
 {
     public class SpecialtyService : ISpecialtyService
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public SpecialtyService(ApplicationDbContext context)
         {
@@ -21,7 +21,11 @@ namespace Scolly.Services.Services
             var specialtyDtos = new List<SpecialtyDto>();
             foreach (var specialty in specialties)
             {
-                specialtyDtos.Add(MapData(specialty));
+                var specialtyDto = await MapData(specialty.Id);
+                if (specialtyDto != null)
+                {
+                    specialtyDtos.Add(specialtyDto);
+                }
             }
             return specialtyDtos;
         }
@@ -30,7 +34,12 @@ namespace Scolly.Services.Services
             var specialty = await _context.Specialties.FirstOrDefaultAsync(x => x.Id == id);
             if (specialty != null)
             {
-                return MapData(specialty);
+                var specialtyDto = await MapData(specialty.Id);
+                if (specialtyDto != null)
+                {
+                    return specialtyDto;
+                }
+                
             }
             return null;
         }
@@ -45,7 +54,11 @@ namespace Scolly.Services.Services
             var specialtyDtos = new List<SpecialtyDto>();
             foreach (var specialty in specialties)
             {
-                specialtyDtos.Add(MapData(specialty));
+                var specialtyDto = await MapData(specialty.Id);
+                if (specialtyDto != null)
+                {
+                    specialtyDtos.Add(specialtyDto);
+                }
             }
             return specialtyDtos;
         }
@@ -73,7 +86,7 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var specialty = await _context.Specialties.FirstOrDefaultAsync(x => x.Id == id);
-            if (specialty != null )
+            if (specialty != null)
             {
                 var teacherSpecialty = new TeacherSpecialty();
                 foreach (var teacher in _context.Teachers.Include(x => x.TeacherSpecialties).ThenInclude(x => x.Specialty))
@@ -90,8 +103,13 @@ namespace Scolly.Services.Services
             }
         }
 
-        public SpecialtyDto MapData(Specialty model)
+        public async Task<SpecialtyDto?> MapData(int modelId)
         {
+            var model = await _context.Specialties.FirstOrDefaultAsync(x => x.Id == modelId);
+            if (model == null)
+            {
+                return null;
+            }
             return new SpecialtyDto { Id = model.Id, Name = model.Name, };
         }
     }

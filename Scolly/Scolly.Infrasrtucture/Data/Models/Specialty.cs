@@ -10,7 +10,5 @@ namespace Scolly.Infrastructure.Data.Models
         [Required]
         [StringLength(50)]
         public string Name { get; set; } = null!;
-
-        public List<TeacherSpecialty> TeachersSpecialty { get; set; } = new List<TeacherSpecialty>();
     }
 }

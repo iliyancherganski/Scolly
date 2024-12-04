@@ -16,11 +16,15 @@ namespace Scolly.Services.Data.DTOs
 
         public decimal Price { get; set; }
 
+        [Required]
+        [StringLength(400)]
+        public string Description { get; set; } = null!;
+
 
         public int CourseTypeDtoId { get; set; }
         public CourseTypeDto CourseTypeDto { get; set; } = null!;
 
-        public List<TeacherCourseDto> TeacherCourseDtos { get; set; } = new List<TeacherCourseDto>();
+        public List<TeacherDto> TeacherDtos { get; set; } = new List<TeacherDto>();
         public List<CourseRequestDto> CourseRequestDtos { get; set; } = new List<CourseRequestDto>();
     }
 }

@@ -11,10 +11,10 @@ namespace Scolly.Services.Services
     public class ParentService : IParentService
     {
         // ctros when done
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        private IChildService _childService;
-        private IUserService _userService;
+        private readonly IChildService _childService;
+        private readonly IUserService _userService;
 
         public ParentService(ApplicationDbContext context, IChildService childService, IUserService userService)
         {
@@ -27,7 +27,7 @@ namespace Scolly.Services.Services
         {
             var parents = await _context.Parents.ToListAsync();
             var parentDtos = new List<ParentDto>();
-            foreach (var parentDto in parents.Select(async x => await MapData(x.Id)))
+            foreach (var parentDto in parents.Select(x => MapData(x.Id)))
             {
                 if (parentDto.Result != null)
                 {
@@ -75,9 +75,11 @@ namespace Scolly.Services.Services
             return parentDtos.FirstOrDefault(x => x.Id == id);
         }
 
-        public Task Add(ParentDto model)
+        public async Task Add(ParentDto model)
         {
-            throw new NotImplementedException();
+            var parent = new Parent();
+            await _context.Parents.AddAsync(parent);
+
         }
 
         public Task DeleteById(int id)

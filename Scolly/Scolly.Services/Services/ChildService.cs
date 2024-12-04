@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 using Scolly.Infrastructure.Data;
 using Scolly.Infrastructure.Data.Enums;
 using Scolly.Infrastructure.Data.Models;
@@ -10,13 +11,15 @@ namespace Scolly.Services.Services
 {
     public class ChildService : IChildService
     {
-        private ApplicationDbContext _context;
-        private IParentService _parentService;
+        private readonly ApplicationDbContext _context;
+        private readonly IParentService _parentService;
+        private readonly ICourseRequestService _courseRequestService;
 
-        public ChildService(ApplicationDbContext context, IParentService parentService)
+        public ChildService(ApplicationDbContext context, IParentService parentService, ICourseRequestService courseRequestService)
         {
             _context = context;
             _parentService = parentService;
+            _courseRequestService = courseRequestService;
         }
 
         public async Task Add(ChildDto model)
@@ -80,18 +83,18 @@ namespace Scolly.Services.Services
 
         public async Task<List<ChildDto>> GetAll()
         {
-            return await _context.Children
-               .Include(x => x.Parent)
-               .ThenInclude(x => x.User)
-               .Include(x => x.CourseRequests)
-               .ThenInclude(x => x.Select(x => x.Course))
-               .ThenInclude(x => x.AgeGroup)
-               .Include(x => x.CourseRequests)
-               .ThenInclude(x => x.Select(x => x.Course))
-               .ThenInclude(x => x.CourseType)
-
-               .Select(x => MapData(x))
-               .ToListAsync();
+            var children = await _context.Children.ToListAsync();
+            var childDtos = new List<ChildDto>();
+            var childDto = new ChildDto();
+            foreach (var child in children)
+            {
+                childDto = await MapData(child.Id);
+                if (childDto != null)
+                {
+                    childDtos.Add(childDto);
+                }
+            }
+            return childDtos;
         }
 
         public async Task<List<ChildDto>> GetAllByName(string name)
@@ -115,36 +118,38 @@ namespace Scolly.Services.Services
             return [];
         }
 
-        public async Task<List<CourseDto>> GetAllCourses(int childId)
+        public async Task<List<CourseDto>> GetAllSignedUpCourses(int childId)
         {
-            /* var child = await _context.Children
-                .Include(x => x.Parent)
-                .ThenInclude(x => x.User)
-                .Include(x => x.CourseRequests)
-                .ThenInclude(x => x.Select(x => x.Course))
-                .ThenInclude(x => x.AgeGroup)
-                .Include(x => x.CourseRequests)
-                .ThenInclude(x => x.Select(x => x.Course))
-                .ThenInclude(x => x.CourseType)
-                .FirstOrDefaultAsync(x => x.Id == childId);
+            var child = await _context.Children
+               .FirstOrDefaultAsync(x => x.Id == childId);
 
-             var courseDtos = new List<CourseDto>();
+            var courseDtos = new List<CourseDto>();
 
-             if (child != null)
-             {
-                 foreach (var course in child.CourseRequests.Where(x => x.Status == RequestStatus.Accepted).Select(x => x.Course))
-                 {
-                     // courseDtos.Add(_courseService.MapData(course));
-                 }
-             }
+            if (child != null)
+            {
+                var courseRequestDtos = await GetAllRequests(child.Id);
 
-             return courseDtos;*/
-            return new List<CourseDto>();
+
+                foreach (var courseRequestDto in courseRequestDtos)
+                {
+                    courseDtos.Add(courseRequestDto.CourseDto);
+                }
+            }
+
+            return courseDtos;
         }
 
-        public Task<List<CourseRequestDto>> GetAllRequests(int childId)
+        public async Task<List<CourseRequestDto>> GetAllRequests(int childId)
         {
-            throw new NotImplementedException();
+            var child = await _context.Children
+               .FirstOrDefaultAsync(x => x.Id == childId);
+
+            var courseRequestDtos = new List<CourseRequestDto>();
+            if (child == null) return courseRequestDtos;
+
+            courseRequestDtos = await _courseRequestService.GetAll();
+            courseRequestDtos = courseRequestDtos.Where(x => x.ChildDtoId == child.Id).ToList();
+            return courseRequestDtos;
         }
 
         public async Task<ChildDto?> GetById(int id)
@@ -194,28 +199,12 @@ namespace Scolly.Services.Services
                 .Include(x => x.Parent)
                 .ThenInclude(x => x.User)
                 .ThenInclude(x => x.City)
-                .Include(x => x.CourseRequests)
-                .ThenInclude(x => x.Select(x => x.Course))
-                .ThenInclude(x => x.AgeGroup)
-                .Include(x => x.CourseRequests)
-                .ThenInclude(x => x.Select(x => x.Course))
-                .ThenInclude(x => x.CourseType)
                 .FirstOrDefaultAsync(x => x.Id == modelId);
 
             if (model == null)
             {
                 return null;
             }
-
-            var courseRequestDtos = new List<CourseRequestDto>();
-            var courseRequests = await _context.CourseRequests
-                .Include(x => x.Child)
-                .Include(x => x.Course)
-                .ThenInclude(x => x.AgeGroup)
-                .Include(x => x.Course)
-                .ThenInclude(x => x.CourseType)
-                .Where(x => x.Child.Id == model.Id)
-                .ToListAsync();
 
             var dto = new ChildDto
             {
@@ -226,7 +215,6 @@ namespace Scolly.Services.Services
             };
 
             var parent = await _context.Parents.FirstOrDefaultAsync(x => x.Id == model.ParentId);
-
             if (parent != null)
             {
                 var parentDto = await _parentService.MapData(model.Parent.Id);
@@ -236,20 +224,6 @@ namespace Scolly.Services.Services
                     dto.ParentDto = parentDto;
                 }
             }
-
-            foreach (var courseRequest in courseRequests)
-            {
-                courseRequestDtos.Add(new CourseRequestDto()
-                {
-                    Id = courseRequest.Id,
-                    CourseDtoId = courseRequest.CourseId,
-                    //CourseDto = _courseService.Mapdata(courseRequest.Course);
-                    ChildDtoId = courseRequest.ChildId,
-                    ChildDto = dto,
-                    Status = courseRequest.Status.ToString(),
-                });
-            }
-            dto.CourseRequestsDtos = courseRequestDtos;
 
             return dto;
         }
@@ -285,26 +259,10 @@ namespace Scolly.Services.Services
 
         public async Task UnregisterChildToCourse(int childId, int courseId)
         {
-            var child = await _context.Children
-              .Include(x => x.CourseRequests)
-              .FirstOrDefaultAsync(x => x.Id == childId);
-
-            var course = await _context.Courses
-                .Include(x => x.CourseRequests)
-                .FirstOrDefaultAsync(x => x.Id == courseId);
-
-            if (child != null && course != null)
+            var courseRequest = await _context.CourseRequests.FirstOrDefaultAsync(x => x.ChildId == childId && x.CourseId == courseId);
+            if (courseRequest != null)
             {
-                var courseRequest = await _context.CourseRequests.FirstOrDefaultAsync(x => x.Course == course && x.Child == child);
-                if (courseRequest != null)
-                {
-                    child.CourseRequests.Remove(courseRequest);
-                    course.CourseRequests.Remove(courseRequest);
-                    _context.CourseRequests.Remove(courseRequest);
-
-                    await _context.CourseRequests.AddAsync(courseRequest);
-                    await _context.SaveChangesAsync();
-                }
+                await _courseRequestService.DeleteById(courseRequest.Id);
             }
         }
     }

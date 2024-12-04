@@ -6,10 +6,9 @@ namespace Scolly.Services.Services.Contracts
     public interface IChildService : IBaseService<ChildDto>
     {
         Task<List<CourseRequestDto>> GetAllRequests(int childId);
-        Task<List<CourseDto>> GetAllCourses(int childId);
+        Task<List<CourseDto>> GetAllSignedUpCourses(int childId);
         Task<ParentDto?> GetParent(int childId);
         Task RequestChildRegisterToCourse(int childId, int courseId);
-        //Task ManageChildRequestToCourse(CourseRequestDto courseRequestDto, bool isAccepted);
         Task UnregisterChildToCourse(int childId, int courseId);
         Task ManageChildRequestToCourse(int childId, int courseId, bool isAccepted);
     }
