@@ -13,6 +13,6 @@ namespace Scolly.Services.Services.Contracts
         Task<CourseDto?> MapData(int modelId);
         Task<List<CourseRequestDto>> GetAllRequests(int courseId);
         Task<List<ChildDto>> GetAllRegisteredChildren(int courseId);
-        Task<List<TeacherDto>> GetAllTeachers(int courseId);
+        Task<List<CourseDto>> GetCoursesOfTeacher(int teacherId);
     }
 }

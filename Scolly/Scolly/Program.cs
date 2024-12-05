@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 
-using Scolly.Extension;
 using Scolly.Extensions;
 using Scolly.Infrastructure.Data;
+using Scolly.Services.Services;
+using Scolly.Services.Services.Contracts;
 
 internal class Program
 {
@@ -18,6 +19,17 @@ internal class Program
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder = WebAppIdentityUser.AddUserIdentityOnBuilder(builder);
+
+        builder.Services.AddScoped<IAgeGroupService, AgeGroupService>();
+        builder.Services.AddScoped<IChildService, ChildService>();
+        builder.Services.AddScoped<ICityService, CityService>();
+        builder.Services.AddScoped<ICourseRequestService, CourseRequestService>();
+        builder.Services.AddScoped<ICourseService, CourseService>();
+        builder.Services.AddScoped<ICourseTypeService, CourseTypeService>();
+        builder.Services.AddScoped<IParentService, ParentService>();
+        builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+        builder.Services.AddScoped<ITeacherService, TeacherService>();
+        builder.Services.AddScoped<IUserService, UserService>();
 
         builder.Services.AddControllersWithViews();
 

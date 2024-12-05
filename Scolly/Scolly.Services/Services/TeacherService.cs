@@ -17,14 +17,12 @@ namespace Scolly.Services.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ISpecialtyService _specialtyService;
-        private readonly ICourseService _courseService;
         private readonly IUserService _userService;
 
-        public TeacherService(ApplicationDbContext context, ISpecialtyService specialtyService, ICourseService courseService, IUserService userService)
+        public TeacherService(ApplicationDbContext context, ISpecialtyService specialtyService, IUserService userService)
         {
             _context = context;
             _specialtyService = specialtyService;
-            _courseService = courseService;
             _userService = userService;
         }
 
@@ -179,28 +177,6 @@ namespace Scolly.Services.Services
             if (teacher == null) return null;
             var teacherDto = await MapData(teacher.Id);
             return teacherDto;
-        }
-
-        public async Task<List<CourseDto>> GetCoursesOfTeacher(int teacherId)
-        {
-            var courseDtos = new List<CourseDto>();
-
-            var teacher = await _context.Teachers
-                .Include(x => x.TeacherCourses)
-                .FirstOrDefaultAsync(x => x.Id == teacherId);
-
-            if (teacher == null) return courseDtos;
-
-            foreach (var courseId in teacher.TeacherCourses.Select(x => x.CourseId))
-            {
-                var courseDto = await _courseService.MapData(courseId);
-                if (courseDto != null)
-                {
-                    courseDtos.Add(courseDto);
-                }
-            }
-
-            return courseDtos;
         }
 
         public async Task<TeacherDto?> MapData(int modelId)

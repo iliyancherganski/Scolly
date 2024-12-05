@@ -2,7 +2,7 @@
 using Scolly.Infrastructure.Data;
 using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
-using Scolly.Services.Services.Interfaces;
+using Scolly.Services.Services.Contracts;
 
 namespace Scolly.Services.Services
 {

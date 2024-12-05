@@ -1,4 +1,6 @@
-﻿/*using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Scolly.Infrastructure.Data.Models;
 
 namespace Scolly.Extensions
@@ -71,4 +73,4 @@ namespace Scolly.Extensions
             return app;
         }
     }
-}*/
+}

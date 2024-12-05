@@ -17,14 +17,14 @@ namespace Scolly.Services.Services
     public class CourseRequestService : ICourseRequestService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ICourseService _courseService;
-        private readonly IChildService _childService;
+        private readonly IAgeGroupService _ageGroupService;
+        private readonly ICourseTypeService _courseTypeService;
 
-        public CourseRequestService(ApplicationDbContext context, ICourseService courseService, IChildService childService)
+        public CourseRequestService(ApplicationDbContext context, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService)
         {
             _context = context;
-            _courseService = courseService;
-            _childService = childService;
+            _ageGroupService = ageGroupService;
+            _courseTypeService = courseTypeService;
         }
 
         public async Task Add(CourseRequestDto model)
@@ -131,19 +131,52 @@ namespace Scolly.Services.Services
 
             var child = model.Child;
             if (child == null) return null;
-            var childDto = await _childService.MapData(child.Id);
-            if (childDto == null) return null;
+            //var childDto = await _childService.MapData(child.Id);
+            //if (childDto == null) return null;
+            var childDto = new ChildDto()
+            {
+                Id = child.Id,
+                FirstName = child.FirstName,
+                LastName = child.LastName,
+                ParentDto = new ParentDto()
+                {
+                    Id = child.Parent.Id,
+                    UserDtoId = child.Parent.UserId,
+                    UserDto = new UserDto()
+                    {
+                        Id = child.Parent.User.Id,
+                        FirstName = child.Parent.User.FirstName,
+                        LastName = child.Parent.User.LastName,
+                    }
+                }
+            };
 
             dto.ChildDtoId = childDto.Id;
             dto.ChildDto = childDto;
 
             var course = model.Course;
             if (course == null) return null;
-            var courseDto = await _courseService.MapData(course.Id);
-            if (courseDto == null) return null;
+            //var courseDto = await _courseService.MapData(course.Id);
+            //if (courseDto == null) return null;
 
-            dto.CourseDtoId = courseDto.Id;
-            dto.CourseDto = courseDto;
+            var ageGroupDto = await     _ageGroupService    .MapData(course.AgeGroupId);
+            var courseTypeDto = await   _courseTypeService  .MapData(course.CourseTypeId);
+
+            if (ageGroupDto != null && courseTypeDto != null)
+            {
+                var courseDto = new CourseDto()
+                {
+                    Id = course.Id,
+                    CourseTypeDto = courseTypeDto,
+                    AgeGroupDto = ageGroupDto,
+                    StartDate = course.StartDate,
+                    EndDate = course.EndDate,
+                    Price = course.Price,
+                };
+
+                dto.CourseDtoId = courseDto.Id;
+                dto.CourseDto = courseDto;
+            }
 
             return dto;
         }

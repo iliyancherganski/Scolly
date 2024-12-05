@@ -12,13 +12,11 @@ namespace Scolly.Services.Services
     public class ChildService : IChildService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IParentService _parentService;
         private readonly ICourseRequestService _courseRequestService;
 
-        public ChildService(ApplicationDbContext context, IParentService parentService, ICourseRequestService courseRequestService)
+        public ChildService(ApplicationDbContext context, ICourseRequestService courseRequestService)
         {
             _context = context;
-            _parentService = parentService;
             _courseRequestService = courseRequestService;
         }
 
@@ -214,15 +212,25 @@ namespace Scolly.Services.Services
                 PhoneNumber = model.PhoneNumber,
             };
 
-            var parent = await _context.Parents.FirstOrDefaultAsync(x => x.Id == model.ParentId);
+            var parent = await _context.Parents
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Id == model.ParentId);
             if (parent != null)
             {
-                var parentDto = await _parentService.MapData(model.Parent.Id);
-                if (parentDto != null)
+                var parentDto = new ParentDto()
                 {
-                    dto.ParentDtoId = model.ParentId;
-                    dto.ParentDto = parentDto;
-                }
+                    Id = parent.Id,
+                    UserDto = new UserDto()
+                    {
+                        Id = parent.User.Id,
+                        FirstName = parent.User.FirstName,
+                        LastName = parent.User.LastName,
+                        PhoneNumber = parent.User.PhoneNumber,
+                    }
+                };
+
+                dto.ParentDtoId = model.ParentId;
+                dto.ParentDto = parentDto;
             }
 
             return dto;

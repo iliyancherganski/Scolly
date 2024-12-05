@@ -9,6 +9,5 @@ namespace Scolly.Services.Services.Contracts
 {
     public interface ITeacherService : IBaseService<TeacherDto>
     {
-        Task<List<CourseDto>> GetCoursesOfTeacher(int teacherId);
     }
 }

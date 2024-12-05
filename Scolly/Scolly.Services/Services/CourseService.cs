@@ -6,7 +6,6 @@ using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.DTOs.Enums;
 using Scolly.Services.Services.Contracts;
-using Scolly.Services.Services.Interfaces;
 
 namespace Scolly.Services.Services
 {
@@ -16,16 +15,14 @@ namespace Scolly.Services.Services
         private readonly IAgeGroupService _ageGroupService;
         private readonly ICourseTypeService _courseTypeService;
         private readonly ICourseRequestService _courseRequestService;
-        private readonly IChildService _childService;
         private readonly ITeacherService _teacherService;
 
-        public CourseService(ApplicationDbContext context, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, ICourseRequestService courseRequestService, IChildService childService, ITeacherService teacherService)
+        public CourseService(ApplicationDbContext context, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, ICourseRequestService courseRequestService, ITeacherService teacherService)
         {
             _context = context;
             _ageGroupService = ageGroupService;
             _courseTypeService = courseTypeService;
             _courseRequestService = courseRequestService;
-            _childService = childService;
             _teacherService = teacherService;
         }
 
@@ -284,6 +281,27 @@ namespace Scolly.Services.Services
             dto.TeacherDtos = teacherDtos;
 
             return dto;
+        }
+        public async Task<List<CourseDto>> GetCoursesOfTeacher(int teacherId)
+        {
+            var courseDtos = new List<CourseDto>();
+
+            var teacher = await _context.Teachers
+                .Include(x => x.TeacherCourses)
+                .FirstOrDefaultAsync(x => x.Id == teacherId);
+
+            if (teacher == null) return courseDtos;
+
+            foreach (var courseId in teacher.TeacherCourses.Select(x => x.CourseId))
+            {
+                var courseDto = await MapData(courseId);
+                if (courseDto != null)
+                {
+                    courseDtos.Add(courseDto);
+                }
+            }
+
+            return courseDtos;
         }
     }
 }
