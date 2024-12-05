@@ -1046,7 +1046,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "Необособен",
                             CityId = 1,
-                            ConcurrencyStamp = "791a205a-3ca7-4156-a7cb-ccf5a7602e6b",
+                            ConcurrencyStamp = "1524c5da-b8cc-4fca-8f37-2e835e6368a2",
                             Email = "admin@admin.bg",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -1055,10 +1055,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Admin",
                             NormalizedEmail = "ADMIN@ADMIN.BG",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAECH4Hk8jxcx4yzyftLGi6LWYGS2EvaS/iLxInK9CNDIjXFRoZZY7yBHw56dlZRyLrA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIGH7q4eHZ43NzwWvtvflw1QirA0vImrGsxBfTxOvAQpltddIHIAWt7pndu6GdNFEQ==",
                             PhoneNumber = "0812345678",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "97c3c327-5a0b-4082-a2fb-806eab196f45",
+                            SecurityStamp = "7630402f-bee2-46a8-8925-ddbcfecd73bf",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -1068,7 +1068,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Никола Габровски' 15А",
                             CityId = 3,
-                            ConcurrencyStamp = "61e04a7d-2a00-4ec8-a157-28cda6db4a57",
+                            ConcurrencyStamp = "6b3bd214-ef66-4d50-b5a4-9943f532bb3b",
                             Email = "teacher1@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Николай",
@@ -1077,10 +1077,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Иванов",
                             NormalizedEmail = "TEACHER1@GMAIL.COM",
                             NormalizedUserName = "TEACHER1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJcWoKZxzvwcLTP0GLRJjtbSPBsGTcLp19z8T6+gd2dZmmCyR8qmEZqRCbmfjuoyoA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBEYV6pKjIzREw3HnM2LEFgr4ddDuNi9Vb7h4Tcd4of9pfqB+42+Bdk3YwtAylj7zQ==",
                             PhoneNumber = "0884672591",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9503bdbe-fa74-44bf-9e79-28d6b36b9fe8",
+                            SecurityStamp = "5bcd35e9-0ff8-4b87-93d7-1ea830e5a92c",
                             TwoFactorEnabled = false,
                             UserName = "teacher1@gmail.com"
                         },
@@ -1090,7 +1090,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Стоян Коледаров' 6",
                             CityId = 2,
-                            ConcurrencyStamp = "51f6fd07-9152-49cb-9ed6-2295d60b6f97",
+                            ConcurrencyStamp = "64ee49f0-1e6f-4fbe-b343-448637afbef6",
                             Email = "teacher2@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Преслав",
@@ -1099,10 +1099,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Николаев",
                             NormalizedEmail = "TEACHER2@GMAIL.COM",
                             NormalizedUserName = "TEACHER2@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI4FfpBVWzwzaZmnfEf+/+xUDBZWkpNkT7hS6d9pEXBm7uySMfne+OtAOAkcwvHwxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN33BuykyWntohJ3DxDgpyEs0StZBXbgXfkIz9anzlGTN9BKwqjjbnurXxH6JEsYBw==",
                             PhoneNumber = "0888967530",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6a811705-5478-4a7d-b1ed-7869650ca13b",
+                            SecurityStamp = "6d3e4b42-7823-48dd-8723-fc1ecda776cc",
                             TwoFactorEnabled = false,
                             UserName = "teacher2@gmail.com"
                         },
@@ -1112,7 +1112,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Мусала' 12",
                             CityId = 2,
-                            ConcurrencyStamp = "2979670a-786f-4fbb-ae0f-d90a89a3e10b",
+                            ConcurrencyStamp = "11e705ce-d974-44cc-a97a-241df556b3e5",
                             Email = "teacher3@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Мария",
@@ -1121,10 +1121,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Атанасова",
                             NormalizedEmail = "TEACHER3@GMAIL.COM",
                             NormalizedUserName = "TEACHER3@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHTqhJupUN+XeMUGHBq46EXlvSqQcuxH+k2dYoV4lAK888r3bswPuShkUEcC1TNzYw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJJC6lRtA/qS6GhDvgh3CUA167wAotf9VqBXhgZLsR3q1HviyGfN97uU0bP+5DWz0Q==",
                             PhoneNumber = "0899745867",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ac92daf5-44cc-463e-9345-6d0fc012849e",
+                            SecurityStamp = "1a65a529-575e-422e-8555-f02663c9e1ff",
                             TwoFactorEnabled = false,
                             UserName = "teacher3@gmail.com"
                         },
@@ -1134,7 +1134,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Васил Левски' 155А",
                             CityId = 4,
-                            ConcurrencyStamp = "41f5ed4d-d2d8-4f69-9857-815f834d9709",
+                            ConcurrencyStamp = "9ba0b793-6707-4f92-85e2-84a6990b3323",
                             Email = "teacher4@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Виктор",
@@ -1143,10 +1143,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Петров",
                             NormalizedEmail = "TEACHER4@GMAIL.COM",
                             NormalizedUserName = "TEACHER4@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJyZf1ou0E164agbGsNDplWG69vm0lwyeKyb+u99yKjxJqE3VK38Z5z/FX4ug4ynkg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC/whK3h8Lw6ZS1TYEoB1w4fK0k+wjRk0CrP6DyCNNXKJbT8L8mws9EWXtrQOfVYWA==",
                             PhoneNumber = "0899745997",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5a04e254-05d2-40df-9c2b-f18a59210ef5",
+                            SecurityStamp = "63206ccd-f010-4206-8b9b-329cceec71f4",
                             TwoFactorEnabled = false,
                             UserName = "teacher4@gmail.com"
                         },
@@ -1156,7 +1156,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Александър Малинов' 33",
                             CityId = 5,
-                            ConcurrencyStamp = "cf285580-0c1d-42be-b974-dcc00f336d27",
+                            ConcurrencyStamp = "5207b8a6-a3d4-475f-a40a-762cfbd2ddbb",
                             Email = "teacher5@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Емил",
@@ -1165,10 +1165,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Давидов",
                             NormalizedEmail = "TEACHER5@GMAIL.COM",
                             NormalizedUserName = "TEACHER5@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG+e43y900M0zk0v3XiP2QL3sFz1jceJN+dfLcVgRg9n3FFv4/4rtez/8fZhjoZmMQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBKBkS94HyG5PMVQ8bfWqX9gQ7DksHLKIvP8yOfuSZYAodUcKn7Bfp/Jlu3NwjXD7w==",
                             PhoneNumber = "0899745000",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a1918373-aca8-4fb8-a4c0-6df5ea5c4e31",
+                            SecurityStamp = "97be1bb6-2040-4dbb-83bc-24e21190d98e",
                             TwoFactorEnabled = false,
                             UserName = "teacher5@gmail.com"
                         },
@@ -1178,7 +1178,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Опълченска' 3А",
                             CityId = 3,
-                            ConcurrencyStamp = "b1ec09c2-ab0a-422a-886e-ef31d8f967ff",
+                            ConcurrencyStamp = "57649bed-1828-4253-88d4-46cb398c828d",
                             Email = "parent1@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Петър",
@@ -1187,10 +1187,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Иванов",
                             NormalizedEmail = "PARENT1@GMAIL.COM",
                             NormalizedUserName = "PARENT1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIzUpIYS4lYlHEHBVCQ+yNOW3f1a4Nnab9T8UWEJUMxnL5S/BpnZsyDsAWE+BVHAOg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOwMvSqWjuBeMd2LWEWrEImuffu8wBgUP8PCrDwTV8zF3RHFko1Wefqo4hju044CRg==",
                             PhoneNumber = "0859989615",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0a8fa5f5-0274-49f5-8db6-030db80b821a",
+                            SecurityStamp = "2591c176-e4f1-4b84-938b-facd8c054927",
                             TwoFactorEnabled = false,
                             UserName = "parent1@gmail.com"
                         },
@@ -1200,7 +1200,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Стоян Коледаров' 3А",
                             CityId = 1,
-                            ConcurrencyStamp = "055caa41-c834-480c-8a9e-eb480e470d9a",
+                            ConcurrencyStamp = "079cf32c-3fe7-4342-9b9c-815afea888f9",
                             Email = "parent2@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Александър",
@@ -1209,10 +1209,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Иванов",
                             NormalizedEmail = "PARENT2@GMAIL.COM",
                             NormalizedUserName = "PARENT2@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEO57dd4fZcIwdDFtF620mxRc9gmBIRYT4UWIFZ//kxpz13YXKxiN7X/yeoT/JD/N4Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEj4KRTyLHe35t7XgDfCTI/dOLa/nHnI9i/mN7b76WtlDbnAQQ50unZojO1SEyLV2A==",
                             PhoneNumber = "0854700615",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f8d33b5f-71fb-412c-9dff-fc4c3f6615d1",
+                            SecurityStamp = "a0831727-df65-44b5-b416-dc7749850f17",
                             TwoFactorEnabled = false,
                             UserName = "parent2@gmail.com"
                         },
@@ -1222,7 +1222,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Петя Дубарова' 16Б",
                             CityId = 6,
-                            ConcurrencyStamp = "6fe423eb-c560-48f0-ac6b-7a62334db61c",
+                            ConcurrencyStamp = "a11b2941-8e7a-4550-a203-bb2ab7ae9e0c",
                             Email = "parent3@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Виктория",
@@ -1231,10 +1231,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Николаева",
                             NormalizedEmail = "PARENT3@GMAIL.COM",
                             NormalizedUserName = "PARENT3@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOTpUMahO9ncVzFOtmAlbW6j615m2Gu90jmgP93CR1IJUNEv0d0/UyiVG7vGogKZTg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAeHsWQ+ho9GuxyqU+D39VysToNC8hqPtCYegdE0uvuUrdJ5I2D3BMs31Bot6hGjQw==",
                             PhoneNumber = "0854789615",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e4564128-8626-4d5c-ac02-c2b016fa3b6f",
+                            SecurityStamp = "c1e9741f-e339-4fbd-9dc4-76fb3912afb2",
                             TwoFactorEnabled = false,
                             UserName = "parent3@gmail.com"
                         },
@@ -1244,7 +1244,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Освобождение' 3Б",
                             CityId = 4,
-                            ConcurrencyStamp = "c63e78df-0edd-4fa9-9053-c7ea3bf2a220",
+                            ConcurrencyStamp = "398d4e18-fe8b-4212-97c3-912e19ed0c0d",
                             Email = "parent4@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Девора",
@@ -1253,10 +1253,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Кирилова",
                             NormalizedEmail = "PARENT4@GMAIL.COM",
                             NormalizedUserName = "PARENT4@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG4r1X2pc9wKicXdLspAMa4LeCoanelnOuSbLJ2Q1pPAL+SudAzYSKQG1J3zyFUHvQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGqD5joC0FcPE17AwZgMhMogCIZKceGRW1uoZJOL/oNySveHoR+4ZdHUfy/Llrjzww==",
                             PhoneNumber = "0865789488",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b7449628-4736-4d01-91c8-3a5b70e57d70",
+                            SecurityStamp = "03502c92-701b-48db-bb34-dc456fddc46b",
                             TwoFactorEnabled = false,
                             UserName = "parent4@gmail.com"
                         },
@@ -1266,7 +1266,7 @@ namespace Scolly.Infrasrtucture.Migrations
                             AccessFailedCount = 0,
                             Address = "ул. 'Георги Бенковски' 25",
                             CityId = 4,
-                            ConcurrencyStamp = "a3de3569-1e53-40a0-8b34-07ed1555b97e",
+                            ConcurrencyStamp = "3456fe06-eb84-46b4-afed-4ddf49e32c03",
                             Email = "parent5@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Даниела",
@@ -1275,10 +1275,10 @@ namespace Scolly.Infrasrtucture.Migrations
                             MiddleName = "Сергеева",
                             NormalizedEmail = "PARENT5@GMAIL.COM",
                             NormalizedUserName = "PARENT5@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENwdxLw2KJ3qUgxu1MBw9oYQjFD1PZcQCiqEwNYsAJhU00D9C+3rQz6E0NkrQsaJ9w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAAuQSPEj+UBlMj4K8Oq43x5RXQhbS8E3au+2gF6VP1pwrdU3UzcLzUr7Rh0g9TUtA==",
                             PhoneNumber = "0813528746",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9e105f7f-d566-4505-a956-a9b3e769fcfb",
+                            SecurityStamp = "68ed8bef-16eb-42ff-859f-274d5cb7f0df",
                             TwoFactorEnabled = false,
                             UserName = "parent5@gmail.com"
                         });
@@ -1428,7 +1428,7 @@ namespace Scolly.Infrasrtucture.Migrations
             modelBuilder.Entity("Scolly.Infrastructure.Data.Models.TeacherSpecialty", b =>
                 {
                     b.HasOne("Scolly.Infrastructure.Data.Models.Specialty", "Specialty")
-                        .WithMany("TeachersSpecialty")
+                        .WithMany()
                         .HasForeignKey("SpecialtyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1475,11 +1475,6 @@ namespace Scolly.Infrasrtucture.Migrations
             modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Parent", b =>
                 {
                     b.Navigation("Children");
-                });
-
-            modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Specialty", b =>
-                {
-                    b.Navigation("TeachersSpecialty");
                 });
 
             modelBuilder.Entity("Scolly.Infrastructure.Data.Models.Teacher", b =>
