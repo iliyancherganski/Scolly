@@ -7,8 +7,8 @@ namespace Scolly.Services.Data.DTOs
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
+		[Required(ErrorMessage = "Полето 'Име' трябва да бъде попълнено.")]
+		[MaxLength(50)]
         public string Name { get; set; } = null!;
     }
 }

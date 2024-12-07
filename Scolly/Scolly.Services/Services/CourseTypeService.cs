@@ -43,7 +43,7 @@ namespace Scolly.Services.Services
                 var courseTypeDto = await MapData(courseType.Id);
                 if (courseTypeDto != null)
                 {
-                   return courseTypeDto;
+                    return courseTypeDto;
                 }
             }
             return null;
@@ -70,31 +70,43 @@ namespace Scolly.Services.Services
 
         public async Task Add(CourseTypeDto model)
         {
-            if (model != null && _context.CourseTypes.FirstOrDefault(x => x.Name.ToLower() == model.Name.ToLower()) != null)
+            if (await _context.CourseTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == model.Name.ToLower()) == null)
             {
                 var courseType = new CourseType { Name = model.Name };
                 await _context.CourseTypes.AddAsync(courseType);
                 await _context.SaveChangesAsync();
+                return;
             }
+            throw new ArgumentException($"Вече съществува тип курс с даденото име - '{model.Name}'.");
         }
 
         public async Task EditById(int id, CourseTypeDto model)
         {
             var courseTypes = await _context.CourseTypes.FirstOrDefaultAsync(x => x.Id == id);
-            if (courseTypes != null && await _context.CourseTypes.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
+            if (courseTypes != null)
             {
-                courseTypes.Name = model.Name;
-                await _context.SaveChangesAsync();
+                if (await _context.CourseTypes.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
+                {
+                    courseTypes.Name = model.Name;
+                    await _context.SaveChangesAsync();
+                    return;
+                }
+                throw new ArgumentException($"Вече съществува тип курс с даденото име - '{model.Name}'.");
             }
         }
 
         public async Task DeleteById(int id)
         {
             var courseType = await _context.CourseTypes.FirstOrDefaultAsync(x => x.Id == id);
-            if (courseType != null && await _context.Courses.Include(x => x.CourseType).FirstOrDefaultAsync(x => x.CourseType == courseType) == null)
+            if (courseType != null)
             {
+                if (await _context.Courses.Include(x => x.CourseType).FirstOrDefaultAsync(x => x.CourseType == courseType) == null)
+                {
                 _context.CourseTypes.Remove(courseType);
                 await _context.SaveChangesAsync();
+                    return;
+                }
+                throw new ArgumentException($"Типът курс {courseType.Name} не може да бъде изтрит, защото съществува курс, който е регистриран с дадения тип.");
             }
         }
 

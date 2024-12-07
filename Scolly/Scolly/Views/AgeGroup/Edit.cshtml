@@ -1,7 +1,7 @@
 ﻿@using Scolly.Services.Data.DTOs;
 @model AgeGroupDto;
 
-<h2>Добавяне на възрастова група</h2>
+<h2>Преименуване на възрастова група</h2>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -9,13 +9,15 @@
     </div>
 }
 
-<form method="post" asp-action="Add" class="d-flex justify-content-center align-items-center flex-column" id="registerForm">
+<form method="post" asp-action="Edit" class="d-flex justify-content-center align-items-center flex-column" id="registerForm">
     <div class="form-group" style="width:500px">
         <label asp-for="Name">Възрастова група</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-lg btn-primary" style="width:400px; margin-top:30px;">Добавете възрастова група</button>
+    <button type="submit" class="btn btn-lg btn-primary" style="width:400px; margin-top:30px;">Преименувайте възрастова група</button>
+
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
     <a asp-action="Index" asp-controller="AgeGroup" class="btn btn-secondary" style="width:400px; margin-top:30px;">Връщане към списъка</a>
 </form>
 

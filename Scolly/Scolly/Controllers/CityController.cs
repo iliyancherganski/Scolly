@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Services.Contracts;
 
 namespace Scolly.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AgeGroupController : BaseController
+    public class CityController : BaseController
     {
-        private readonly IAgeGroupService _ageGroupService;
+        private readonly ICityService _cityService;
 
-        public AgeGroupController(IAgeGroupService ageGroupService)
+        public CityController(ICityService cityService)
         {
-            _ageGroupService = ageGroupService;
+            _cityService = cityService;
         }
 
         public async Task<IActionResult> Index(int? page,
@@ -21,24 +20,24 @@ namespace Scolly.Controllers
             string? searchInput = null)
         {
 
-            var dtos = await _ageGroupService.GetAll();
+            var dtos = await _cityService.GetAll();
             if (sortByName != null)
             {
                 if (sortByName == false)
                 {
-                    dtos = dtos.OrderBy(x => x.Name.Length).ThenByDescending(x => x.Name).ToList();
+                    dtos = dtos.OrderByDescending(x => x.Name).ToList();
                     ViewBag.SortByName = false;
                 }
                 else
                 {
-                    dtos = dtos.OrderBy(x => x.Name.Length).ThenBy(x => x.Name).ToList();
+                    dtos = dtos.OrderBy(x => x.Name).ToList();
                     ViewBag.SortByName = true;
                 }
             }
 
             if (searchInput != null)
             {
-                dtos = await _ageGroupService.GetAllByName(searchInput);
+                dtos = await _cityService.GetAllByName(searchInput);
             }
 
             dtos = Pagination(page, dtos, 16);
@@ -47,18 +46,18 @@ namespace Scolly.Controllers
 
         public IActionResult Add()
         {
-            var dto = new AgeGroupDto();
+            var dto = new CityDto();
             return View(dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(AgeGroupDto model)
+        public async Task<IActionResult> Add(CityDto model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _ageGroupService.Add(model);
+                    await _cityService.Add(model);
                     return RedirectToAction("Index");
                 }
                 catch (ArgumentException ex)
@@ -72,18 +71,18 @@ namespace Scolly.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var dto = await _ageGroupService.GetById(id);
+            var dto = await _cityService.GetById(id);
             return View(dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(AgeGroupDto model)
+        public async Task<IActionResult> Edit(CityDto model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _ageGroupService.EditById(model.Id, model);
+                    await _cityService.EditById(model.Id, model);
                     return RedirectToAction("Index");
                 }
                 catch (ArgumentException ex)
@@ -99,7 +98,7 @@ namespace Scolly.Controllers
         {
             try
             {
-                await _ageGroupService.DeleteById(id);
+                await _cityService.DeleteById(id);
                 return RedirectToAction("Index");
             }
             catch (ArgumentException ex)

@@ -1,0 +1,23 @@
+﻿@using Scolly.Services.Data.DTOs;
+@model CourseTypeDto;
+
+<h2>Преименуване на тип курс</h2>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<form method="post" asp-action="Edit" class="d-flex justify-content-center align-items-center flex-column" id="registerForm">
+    <div class="form-group" style="width:500px">
+        <label asp-for="Name">Тип курс</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-lg btn-primary" style="width:400px; margin-top:30px;">Преименувайте тип курс</button>
+
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    <a asp-action="Index" asp-controller="CourseType" class="btn btn-secondary" style="width:400px; margin-top:30px;">Връщане към списъка</a>
+</form>
+

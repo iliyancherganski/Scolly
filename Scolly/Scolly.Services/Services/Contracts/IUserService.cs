@@ -1,6 +1,8 @@
-﻿using Scolly.Infrastructure.Data.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Data.Enums;
+using System.Security.Claims;
 
 namespace Scolly.Services.Services.Contracts
 {
@@ -13,5 +15,8 @@ namespace Scolly.Services.Services.Contracts
         Task EditUserById(string id, UserDto model);
         Task DeleteUserById(string id);
         Task<UserDto?> MapData(string modelId);
+
+        bool IsSignedIn(ClaimsPrincipal user);
+        Task<SignInResult?> SignIn(string username, string password);
     }
 }

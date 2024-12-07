@@ -78,8 +78,18 @@ namespace Scolly.Services.Services
         public async Task Add(ParentDto model)
         {
             var parent = new Parent();
-            await _context.Parents.AddAsync(parent);
 
+            string? userId = await _userService.RegisterNewUser(model.UserDto);
+            if (userId == null)
+                throw new ArgumentException("Вече има регистриран потребител с този имейл.");
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null) return;
+
+            parent.UserId = user.Id;
+            parent.User = user;
+
+            await _context.Parents.AddAsync(parent);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteById(int id)

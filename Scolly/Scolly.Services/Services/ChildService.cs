@@ -38,6 +38,7 @@ namespace Scolly.Services.Services
                 await _context.Children.AddAsync(child);
                 await _context.SaveChangesAsync();
             }
+            throw new ArgumentException("Не съществува такъв регистриран родител.");
         }
 
         public async Task DeleteById(int id)
@@ -57,7 +58,9 @@ namespace Scolly.Services.Services
                     await UnregisterChildToCourse(child.Id, course.Id);
                 }
                 await _context.SaveChangesAsync();
+                return;
             }
+            throw new ArgumentException("Не съществува дете, регистрирано с това ID.");
         }
 
         public async Task EditById(int id, ChildDto model)
@@ -75,8 +78,9 @@ namespace Scolly.Services.Services
                 child.PhoneNumber = model.PhoneNumber;
 
                 await _context.SaveChangesAsync();
+                return;
             }
-
+            throw new ArgumentException("Не съществува дете, регистрирано с това ID.");
         }
 
         public async Task<List<ChildDto>> GetAll()
@@ -132,6 +136,10 @@ namespace Scolly.Services.Services
                 {
                     courseDtos.Add(courseRequestDto.CourseDto);
                 }
+            }
+            else
+            {
+                throw new ArgumentException("Не съществува дете, регистрирано с това ID.");
             }
 
             return courseDtos;

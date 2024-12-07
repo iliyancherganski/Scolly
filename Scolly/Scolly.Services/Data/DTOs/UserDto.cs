@@ -35,7 +35,7 @@ namespace Scolly.Services.Data.DTOs
         public string? PhoneNumber { get; set; }
 
         [Required]
-        [EmailAddress]
+        [MaxLength(40)]
         public string Password { get; set; } = null!;
 
         [Required]

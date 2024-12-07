@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Scolly.Infrastructure.Data.Models;
 using Scolly.Models;
+using Scolly.ViewModels;
 using System.Diagnostics;
 
 namespace Scolly.Controllers

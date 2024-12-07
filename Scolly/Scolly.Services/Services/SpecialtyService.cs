@@ -39,7 +39,7 @@ namespace Scolly.Services.Services
                 {
                     return specialtyDto;
                 }
-                
+
             }
             return null;
         }
@@ -65,21 +65,28 @@ namespace Scolly.Services.Services
 
         public async Task Add(SpecialtyDto model)
         {
-            if (model != null && _context.Specialties.FirstOrDefault(x => x.Name.ToLower() == model.Name.ToLower()) != null)
+            if (_context.Specialties.FirstOrDefault(x => x.Name.ToLower() == model.Name.ToLower()) == null)
             {
                 var specialty = new Specialty { Name = model.Name };
                 await _context.Specialties.AddAsync(specialty);
                 await _context.SaveChangesAsync();
+                return;
             }
+            throw new ArgumentException($"Вече съществува специалност с даденото име - '{model.Name}'.");
         }
 
         public async Task EditById(int id, SpecialtyDto model)
         {
             var specialty = await _context.Specialties.FirstOrDefaultAsync(x => x.Id == id);
-            if (specialty != null && await _context.Specialties.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
+            if (specialty != null)
             {
-                specialty.Name = model.Name;
-                await _context.SaveChangesAsync();
+                if (await _context.Specialties.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
+                {
+                    specialty.Name = model.Name;
+                    await _context.SaveChangesAsync();
+                    return;
+                }
+                throw new ArgumentException($"Вече съществува специалност с даденото име - '{model.Name}'.");
             }
         }
 

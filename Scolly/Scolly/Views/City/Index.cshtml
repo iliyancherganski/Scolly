@@ -1,7 +1,8 @@
 ﻿@using Scolly.Services.Data.DTOs;
-@model List<AgeGroupDto>;
+@model List<CityDto>;
 
-<h2>Списък с възрастови групи</h2>
+<h2>Списък с градове</h2>
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -9,6 +10,7 @@
     </div>
 }
 
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="--bs-bg-opacity:0; padding:0;">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarColor01" style="margin-bottom:20px">
@@ -22,16 +24,16 @@
                         {
                             if (ViewBag.SortByName == true)
                             {
-                                <a asp-controller="AgeGroup" asp-action="Index" asp-route-sortByName="@false" class="btn btn-dark">Име (по азбучен ред)</a>
+                                <a asp-controller="City" asp-action="Index" asp-route-sortByName="@false" class="btn btn-dark">Име (по азбучен ред)</a>
                             }
                             else
                             {
-                                <a asp-controller="AgeGroup" asp-action="Index" asp-route-sortByName="@true" class="btn btn-dark">Име (обратно на азбучен ред)</a>
+                                <a asp-controller="City" asp-action="Index" asp-route-sortByName="@true" class="btn btn-dark">Име (обратно на азбучен ред)</a>
                             }
                         }
                         else
                         {
-                            <a asp-controller="AgeGroup" asp-action="Index" asp-route-sortByName="@true" class="btn btn-outline-dark">Име</a>
+                            <a asp-controller="City" asp-action="Index" asp-route-sortByName="@true" class="btn btn-outline-dark">Име</a>
                         }
 
                     </div>
@@ -46,13 +48,13 @@
                 <form id="searchForm" class="d-flex" action="Index" method="get">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item" style="margin:0; margin-left:5px">
-                            <input id="searchInput" name="searchInput" class="form-control me-sm-2" type="search" placeholder="Търсене по клас..." value="@searchInput">
+                            <input id="searchInput" name="searchInput" class="form-control me-sm-2" type="search" placeholder="Търсене по град..." value="@searchInput">
                         </li>
                         <li class="nav-item" style="margin:0; margin-left:5px">
-                            <button id="searchButton" type="submit" asp-action="Index" asp-controller="AgeGroup" class="btn btn-light">Търсете</button>
+                            <button id="searchButton" type="submit" asp-action="Index" asp-controller="City" class="btn btn-light">Търсете</button>
                         </li>
                         <li class="nav-item" style="margin:0; margin-left:5px">
-                            <a asp-controller="AgeGroup" asp-action="Index" class="btn btn-outline-danger">тип курс филтри</a>
+                            <a asp-controller="City" asp-action="Index" class="btn btn-outline-danger">Премахнете филтри</a>
                         </li>
                     </ul>
                 </form>
@@ -60,29 +62,28 @@
         </div>
     </div>
 </nav>
-
 <table class="table">
     <thead>
         <tr>
-            <th>Име на възрастова група</th>
+            <th>Име на специалност</th>
             <th>Действие</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var ageGroup in Model)
+        @foreach (var city in Model)
         {
             <tr>
-                <td>@ageGroup.Name</td>
+                <td>@city.Name</td>
                 <td>
-                    <a asp-action="Edit" asp-controller="AgeGroup" asp-route-id="@ageGroup.Id" class="btn btn-warning">Редактиране</a>
-                    <a href="#" onclick="confirmDelete('@ageGroup.Name', '@ageGroup.Id')" class="btn btn-danger">Изтриване</a>
+                    <a asp-action="Edit" asp-controller="City" asp-route-id="@city.Id" class="btn btn-warning">Редактиране</a>
+                    <a href="#" onclick="confirmDelete('@city.Name', '@city.Id')" class="btn btn-danger">Изтриване</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<div class="pagination">
+<div>
     <ul class="pagination">
         @for (int i = 1; i <= ViewBag.PageCount; i++)
         {
@@ -91,15 +92,15 @@
                 <li class="page-item active">
                     @if (ViewBag.SortByName != null)
                     {
-                        <a asp-controller="AgeGroup" asp-action="Index" asp-route-page="@i" asp-route-sortByName="@ViewBag.SortByName" class="page-link">@i</a>
+                        <a asp-controller="City" asp-action="Index" asp-route-page="@i" asp-route-sortByName="@ViewBag.SortByName" class="page-link">@i</a>
                     }
                     else if (ViewBag.SearchInput != null)
                     {
-                        <a asp-controller="AgeGroup" asp-action="Index" asp-route-page="@i" asp-route-searchInput="@ViewBag.SearchInput" class="page-link">@i</a>
+                        <a asp-controller="City" asp-action="Index" asp-route-page="@i" asp-route-searchInput="@ViewBag.SearchInput" class="page-link">@i</a>
                     }
                     else
                     {
-                        <a asp-controller="AgeGroup" asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
+                        <a asp-controller="City" asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
                     }
                 </li>
             }
@@ -108,15 +109,15 @@
                 <li class="page-item">
                     @if (ViewBag.SortByName != null)
                     {
-                        <a asp-controller="AgeGroup" asp-action="Index" asp-route-page="@i" asp-route-sortByName="@ViewBag.SortByName" class="page-link">@i</a>
+                        <a asp-controller="City" asp-action="Index" asp-route-page="@i" asp-route-sortByName="@ViewBag.SortByName" class="page-link">@i</a>
                     }
                     else if (ViewBag.SearchInput != null)
                     {
-                        <a asp-controller="AgeGroup" asp-action="Index" asp-route-page="@i" asp-route-searchInput="@ViewBag.SearchInput" class="page-link">@i</a>
+                        <a asp-controller="City" asp-action="Index" asp-route-page="@i" asp-route-searchInput="@ViewBag.SearchInput" class="page-link">@i</a>
                     }
                     else
                     {
-                        <a asp-controller="AgeGroup" asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
+                        <a asp-controller="City" asp-action="Index" asp-route-page="@i" class="page-link">@i</a>
                     }
                 </li>
             }
@@ -125,15 +126,15 @@
 </div>
 
 <div class="text-center">
-    <a asp-action="Add" asp-controller="AgeGroup" class="btn btn-primary">Добавете нова възрастова група</a>
+    <a asp-action="Add" class="btn btn-primary">Добавете нова специалност</a>
 </div>
 
 @section Scripts {
     <script>
-        function confirmDelete(аgeGroupName, ageGroupId) {
-            var result = confirm("Сигурни ли сте, че искате да изтриете възрастовата група " + аgeGroupName + "?");
+        function confirmDelete(cityName, cityId) {
+            var result = confirm("Сигурни ли сте, че искате да изтриете града " + cityName + "?");
             if (result) {
-                window.location.href = '/AgeGroup/Delete?id=' + ageGroupId;
+                window.location.href = '/City/Delete?id=' + cityId;
             }
         }
     </script>

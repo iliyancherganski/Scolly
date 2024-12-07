@@ -42,7 +42,8 @@ namespace Scolly.Services.Services
             }
 
             string? userId = await _userService.RegisterNewUser(model.UserDto);
-            if (userId == null) return;
+            if (userId == null)
+                throw new ArgumentException("Вече има регистриран потребител с този имейл.");
             var user = await _context.Users.FirstOrDefaultAsync(x=>x.Id == userId);
             if (user == null) return;
 

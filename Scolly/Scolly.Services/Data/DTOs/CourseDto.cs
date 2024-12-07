@@ -4,7 +4,6 @@ namespace Scolly.Services.Data.DTOs
 {
     public class CourseDto
     {
-        [Required]
         public int Id { get; set; }
 
         public int AgeGroupDtoId { get; set; }

@@ -13,11 +13,11 @@ namespace Scolly.Services.Data.DTOs
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Полето 'Собствено име' трябва да бъде попълнено.")]
         [MaxLength(50)]
         public string FirstName { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Полето 'Фамилия' трябва да бъде попълнено.")]
         [MaxLength(50)]
         public string LastName { get; set; } = null!;
 
@@ -25,6 +25,7 @@ namespace Scolly.Services.Data.DTOs
         public ParentDto ParentDto { get; set; } = null!;
 
         [MaxLength(15)]
+        [Phone(ErrorMessage = "Телефонния номер трябва да бъде валиден!")]
         public string? PhoneNumber { get; set; }
 
         public List<CourseRequestDto> CourseRequestsDtos { get; set; } = new List<CourseRequestDto>();

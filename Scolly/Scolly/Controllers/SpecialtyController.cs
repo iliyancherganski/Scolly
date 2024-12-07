@@ -1,19 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Scolly.Infrastructure.Data.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Services.Contracts;
 
 namespace Scolly.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class AgeGroupController : BaseController
+    public class SpecialtyController : BaseController
     {
-        private readonly IAgeGroupService _ageGroupService;
+        private readonly ISpecialtyService _specialtyService;
 
-        public AgeGroupController(IAgeGroupService ageGroupService)
+        public SpecialtyController(ISpecialtyService specialtyService)
         {
-            _ageGroupService = ageGroupService;
+            _specialtyService = specialtyService;
         }
 
         public async Task<IActionResult> Index(int? page,
@@ -21,24 +18,24 @@ namespace Scolly.Controllers
             string? searchInput = null)
         {
 
-            var dtos = await _ageGroupService.GetAll();
+            var dtos = await _specialtyService.GetAll();
             if (sortByName != null)
             {
                 if (sortByName == false)
                 {
-                    dtos = dtos.OrderBy(x => x.Name.Length).ThenByDescending(x => x.Name).ToList();
+                    dtos = dtos.OrderByDescending(x => x.Name).ToList();
                     ViewBag.SortByName = false;
                 }
                 else
                 {
-                    dtos = dtos.OrderBy(x => x.Name.Length).ThenBy(x => x.Name).ToList();
+                    dtos = dtos.OrderBy(x => x.Name).ToList();
                     ViewBag.SortByName = true;
                 }
             }
 
             if (searchInput != null)
             {
-                dtos = await _ageGroupService.GetAllByName(searchInput);
+                dtos = await _specialtyService.GetAllByName(searchInput);
             }
 
             dtos = Pagination(page, dtos, 16);
@@ -47,18 +44,18 @@ namespace Scolly.Controllers
 
         public IActionResult Add()
         {
-            var dto = new AgeGroupDto();
+            var dto = new SpecialtyDto();
             return View(dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(AgeGroupDto model)
+        public async Task<IActionResult> Add(SpecialtyDto model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _ageGroupService.Add(model);
+                    await _specialtyService.Add(model);
                     return RedirectToAction("Index");
                 }
                 catch (ArgumentException ex)
@@ -72,18 +69,18 @@ namespace Scolly.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var dto = await _ageGroupService.GetById(id);
+            var dto = await _specialtyService.GetById(id);
             return View(dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(AgeGroupDto model)
+        public async Task<IActionResult> Edit(SpecialtyDto model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _ageGroupService.EditById(model.Id, model);
+                    await _specialtyService.EditById(model.Id, model);
                     return RedirectToAction("Index");
                 }
                 catch (ArgumentException ex)
@@ -99,7 +96,7 @@ namespace Scolly.Controllers
         {
             try
             {
-                await _ageGroupService.DeleteById(id);
+                await _specialtyService.DeleteById(id);
                 return RedirectToAction("Index");
             }
             catch (ArgumentException ex)

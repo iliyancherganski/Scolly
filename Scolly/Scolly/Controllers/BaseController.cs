@@ -4,6 +4,8 @@ namespace Scolly.Controllers
 {
     public class BaseController : Controller
     {
+
+
         public List<T> Pagination<T>(int? page, List<T> list, int elementsOnPage)
         {
             if (page == null || elementsOnPage < page * elementsOnPage - list.Count())

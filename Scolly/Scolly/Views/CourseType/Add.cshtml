@@ -1,7 +1,7 @@
 ﻿@using Scolly.Services.Data.DTOs;
-@model AgeGroupDto;
+@model CourseTypeDto;
 
-<h2>Добавяне на възрастова група</h2>
+<h2>Добавяне на тип курс</h2>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -11,11 +11,11 @@
 
 <form method="post" asp-action="Add" class="d-flex justify-content-center align-items-center flex-column" id="registerForm">
     <div class="form-group" style="width:500px">
-        <label asp-for="Name">Възрастова група</label>
+        <label asp-for="Name">Тип курс</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-lg btn-primary" style="width:400px; margin-top:30px;">Добавете възрастова група</button>
-    <a asp-action="Index" asp-controller="AgeGroup" class="btn btn-secondary" style="width:400px; margin-top:30px;">Връщане към списъка</a>
+    <button type="submit" class="btn btn-lg btn-primary" style="width:400px; margin-top:30px;">Добавете тип курс</button>
+    <a asp-action="Index" asp-controller="CourseType" class="btn btn-secondary" style="width:400px; margin-top:30px;">Връщане към списъка</a>
 </form>
 

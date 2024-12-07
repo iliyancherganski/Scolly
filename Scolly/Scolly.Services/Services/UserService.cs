@@ -6,6 +6,7 @@ using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Data.Enums;
 using Scolly.Services.Services.Contracts;
+using System.Security.Claims;
 
 namespace Scolly.Services.Services
 {
@@ -112,6 +113,11 @@ namespace Scolly.Services.Services
             return dto;
         }
 
+        public bool IsSignedIn(ClaimsPrincipal user)
+        {
+            return _signInManager.IsSignedIn(user);
+        }
+
         public async Task<UserDto?> MapData(string modelId)
         {
             var model = await _context.Users
@@ -178,6 +184,17 @@ namespace Scolly.Services.Services
                 }
             }
             return null;
+        }
+
+        public async Task<SignInResult?> SignIn(string username, string password)
+        {
+            var user = _context.Users.FirstOrDefault(x => (x.UserName != null && x.UserName.ToUpper() == username.ToUpper()) || (x.Email != null && x.Email.ToUpper() == username.ToUpper()));
+            if (user == null || user.UserName == null)
+            {
+                throw new ArgumentException("Невалиден имейл или парола!");
+            }
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, password, true, lockoutOnFailure: false);
+            return result;
         }
 
         private User CreateUser()

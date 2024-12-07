@@ -61,31 +61,43 @@ namespace Scolly.Services.Services
 
         public async Task Add(AgeGroupDto model)
         {
-            if (model != null && _context.AgeGroups.FirstOrDefault(x => x.Name.ToLower() == model.Name.ToLower()) != null)
+            if (await _context.AgeGroups.FirstOrDefaultAsync(x => x.Name.ToLower() == model.Name.ToLower()) == null)
             {
                 var ageGoup = new AgeGroup { Name = model.Name };
                 await _context.AgeGroups.AddAsync(ageGoup);
                 await _context.SaveChangesAsync();
+                return;
             }
+            throw new ArgumentException($"Друга възрастова група е регистрирана със същото име - '{model.Name}'.");
         }
 
         public async Task EditById(int id, AgeGroupDto model)
         {
             var ageGroup = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == id);
-            if (ageGroup != null && await _context.AgeGroups.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
+            if (ageGroup != null)
             {
-                ageGroup.Name = model.Name;
-                await _context.SaveChangesAsync();
+                if (await _context.AgeGroups.FirstOrDefaultAsync(x => x.Name == model.Name) == null)
+                {
+                    ageGroup.Name = model.Name;
+                    await _context.SaveChangesAsync();
+                    return;
+                }
+                throw new ArgumentException($"Друга възрастова група е регистрирана със същото име - '{model.Name}'.");
             }
         }
 
         public async Task DeleteById(int id)
         {
             var ageGroup = await _context.AgeGroups.FirstOrDefaultAsync(x => x.Id == id);
-            if (ageGroup != null && await _context.Courses.Include(x => x.AgeGroup).FirstOrDefaultAsync(x => x.AgeGroup == ageGroup) == null)
+            if (ageGroup != null)
             {
-                _context.AgeGroups.Remove(ageGroup);
-                await _context.SaveChangesAsync();
+                if (await _context.Courses.Include(x => x.AgeGroup).FirstOrDefaultAsync(x => x.AgeGroup == ageGroup) == null)
+                {
+                    _context.AgeGroups.Remove(ageGroup);
+                    await _context.SaveChangesAsync();
+                    return;
+                }
+                throw new ArgumentException($"Има регистриран курс със дадената възрастова група - '{ageGroup.Name}'.");
             }
         }
 

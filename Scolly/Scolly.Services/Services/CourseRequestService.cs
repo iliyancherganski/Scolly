@@ -159,8 +159,8 @@ namespace Scolly.Services.Services
             //var courseDto = await _courseService.MapData(course.Id);
             //if (courseDto == null) return null;
 
-            var ageGroupDto = await     _ageGroupService    .MapData(course.AgeGroupId);
-            var courseTypeDto = await   _courseTypeService  .MapData(course.CourseTypeId);
+            var ageGroupDto = await _ageGroupService.MapData(course.AgeGroupId);
+            var courseTypeDto = await _courseTypeService.MapData(course.CourseTypeId);
 
             if (ageGroupDto != null && courseTypeDto != null)
             {
