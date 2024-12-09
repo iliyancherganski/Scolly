@@ -24,4 +24,8 @@
 		<ProjectReference Include="..\Scolly.Services\Scolly.Services.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	</ItemGroup>
+
 </Project>

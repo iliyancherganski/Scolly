@@ -12,13 +12,13 @@ namespace Scolly.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, IUserService userService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
         {
             _userService = userService;
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
             if (!_userService.IsSignedIn(User))
             {

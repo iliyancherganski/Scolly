@@ -6,11 +6,8 @@ namespace Scolly.Controllers
 {
     public class SpecialtyController : BaseController
     {
-        private readonly ISpecialtyService _specialtyService;
-
-        public SpecialtyController(ISpecialtyService specialtyService)
+        public SpecialtyController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
         {
-            _specialtyService = specialtyService;
         }
 
         public async Task<IActionResult> Index(int? page,

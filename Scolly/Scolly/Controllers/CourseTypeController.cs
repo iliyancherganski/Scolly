@@ -8,11 +8,8 @@ namespace Scolly.Controllers
     [Authorize(Roles = "Admin")]
     public class CourseTypeController : BaseController
     {
-        private readonly ICourseTypeService _courseTypeService;
-
-        public CourseTypeController(ICourseTypeService courseTypeService)
+        public CourseTypeController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
         {
-            _courseTypeService = courseTypeService;
         }
 
         public async Task<IActionResult> Index(int? page,

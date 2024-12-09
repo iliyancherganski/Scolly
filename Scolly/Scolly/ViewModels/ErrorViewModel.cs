@@ -1,4 +1,4 @@
-namespace Scolly.Models
+namespace Scolly.ViewModels
 {
     public class ErrorViewModel
     {

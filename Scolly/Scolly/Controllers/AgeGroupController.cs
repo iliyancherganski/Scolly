@@ -9,11 +9,8 @@ namespace Scolly.Controllers
     [Authorize(Roles = "Admin")]
     public class AgeGroupController : BaseController
     {
-        private readonly IAgeGroupService _ageGroupService;
-
-        public AgeGroupController(IAgeGroupService ageGroupService)
+        public AgeGroupController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
         {
-            _ageGroupService = ageGroupService;
         }
 
         public async Task<IActionResult> Index(int? page,
