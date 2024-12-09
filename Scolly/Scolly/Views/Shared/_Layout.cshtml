@@ -27,8 +27,7 @@
                     <ul class="navbar-nav me-auto">
                         @if (userService.IsSignedIn(User))
                         {
-                            if (User.IsInRole("Admin")
-                            || User.IsInRole("Employee"))
+                            if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,13 +50,12 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" asp-area="" asp-controller="Course" asp-action="Index">Всички курсове</a>
-                                @if (User.IsInRole("Teacher") || User.IsInRole("Employee"))
+                                @if (User.IsInRole("Teacher"))
                                 {
                                     <a class="dropdown-item" asp-controller="Course" asp-action="MyCourses">Моите курсове</a>
                                 }
 
-                                @if (User.IsInRole("Admin")
-                                || User.IsInRole("Employee"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <a class="dropdown-item" asp-area="" asp-controller="Course" asp-action="Add">Нов курс</a>
                                     <a class="dropdown-item" asp-area="" asp-controller="Course" asp-action="Requests">Заявки за записване на курс</a>
@@ -89,29 +87,21 @@
                                 </li>
                             }
                             if (User.IsInRole("Admin")
-                            || User.IsInRole("Employee")
                             || User.IsInRole("Teacher"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Parent" asp-action="Index">Родители</a>
                                 </li>
                             }
-                            if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Employee" asp-action="Index">Служители</a>
-                                </li>
-                            }
-                            if (User.IsInRole("Admin")
-                            || User.IsInRole("Employee")
+                            @* if (User.IsInRole("Admin")
                             || User.IsInRole("Parent")
                             || User.IsInRole("Teacher"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Teacher" asp-action="Index">Учители</a>
-                                </li>
-                            }
+                            } *@
                         }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Teacher" asp-action="Index">Учители</a>
+                        </li>
                     </ul>
                     @* <form class="d-flex"> *@
                     <partial name="_LoginPartial" />

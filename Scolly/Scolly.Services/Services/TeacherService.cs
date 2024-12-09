@@ -172,6 +172,21 @@ namespace Scolly.Services.Services
             return teacherDtos;
         }
 
+        public async Task<List<TeacherDto>> GetAllTeachersByCourse(int courseId)
+        {
+            var course = await _context.Courses
+                .Include(x=>x.TeachersCourse)
+                .ThenInclude(x=>x.Teacher)
+                .FirstOrDefaultAsync(x=>x.Id == courseId);
+            if (course == null)
+            {
+                return new List<TeacherDto>();
+            }
+            var dtos = await GetAll();
+            dtos = dtos.Where(x => x.CourseDtos.Select(x=>x.Id).Contains(course.Id)).ToList();
+            return dtos;
+        }
+
         public async Task<TeacherDto?> GetById(int id)
         {
             var teacher = await _context.Teachers.FirstOrDefaultAsync(x => x.Id == id);
@@ -186,6 +201,7 @@ namespace Scolly.Services.Services
                 .Include(x => x.TeacherSpecialties)
                 .ThenInclude(x => x.Specialty)
                 .Include(x => x.TeacherCourses)
+                .Include(x=>x.User)
                 .FirstOrDefaultAsync(x => x.Id == modelId);
             if (model == null) return null;
 

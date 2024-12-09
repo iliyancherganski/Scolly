@@ -1,0 +1,73 @@
+﻿@using Scolly.Services.DTOs.Enums
+@using Scolly.Services.Data.DTOs
+@using System.Globalization
+@model TeacherDto
+
+<div>
+	<h1>Информация за учител</h1>
+	<h3>Име: @Model.UserDto.FirstName @Model.UserDto.LastName</h3>
+	<p>Телефон: @Model.UserDto.PhoneNumber</p>
+
+	@if (Model.SpecialtyDtos.Count > 0)
+	{
+		<p>Специалности:</p>
+		<ul>
+			@foreach (var specialty in Model.SpecialtyDtos)
+			{
+				<li>@specialty.Name</li>
+			}
+		</ul>
+	}
+</div>
+@if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Teacher"))
+{
+	if (Model.CourseDtos.Count() > 0)
+	{
+		<h3>Курсове:</h3>
+	}
+	<div class="card-deck">
+		@foreach (var course in Model.CourseDtos)
+		{
+			<div class="card border-light mb-3" style="width: 18rem; margin-bottom: 20px;">
+				<div class="card-body">
+					<div>
+						<h5 class="card-header">@course.CourseTypeDto.Name</h5>
+					</div>
+					<div>
+						<p class="card-title">@course.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG")) - @course.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))</p>
+						<p class="card-title">Възрастова група: @course.AgeGroupDto.Name</p>
+						<p class="card-title">Активно записани деца: @course.CourseRequestDtos.Count()</p>
+						@if (course.TeacherDtos != null)
+						{
+							<p class="card-text">Учители: <strong>@($"{string.Join(", ", course.TeacherDtos.Select(x => $"{x.UserDto.FirstName} {x.UserDto.LastName}"))}")</strong></p>
+						}
+					</div>
+					<div class="card-buttons">
+						<a asp-controller="Course" asp-action="Info" asp-route-courseId="@course.Id" class="btn btn-outline-info">Информация</a>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+}
+@* @if (User.IsInRole("Admin") || (User.IsInRole("Teacher") && User.Identity?.Name == Model.User.Email))
+{
+	<a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" asp-route-role="Teacher" class="btn btn-warning">Редактиране</a>
+	<a href="#" onclick="confirmDelete('@Model.User.FirstName', '@Model.User.LastName', '@Model.Id')" class="btn btn-danger">Изтриване</a>
+} *@
+<a asp-controller="Teacher" asp-action="Index" class="btn btn-primary">Всички учители</a>
+
+@section Scripts{
+	<script>
+		function confirmDelete(firstName, lastName, teacherId) {
+			// Display a confirmation dialog
+			var result = confirm("Сигурни ли сте, че искате да изтриете всички данни на учителя " + firstName + " " + lastName + "?");
+
+			// If the user clicks "OK," proceed with the deletion
+			if (result) {
+				// Redirect to the Delete action with the childId
+				window.location.href = '/Teacher/Delete?teacherId=' + teacherId;
+			}
+		}
+	</script>
+}

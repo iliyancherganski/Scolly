@@ -35,6 +35,7 @@ namespace Scolly.Controllers
             if (searchInput != null)
             {
                 dtos = await _courseTypeService.GetAllByName(searchInput);
+                ViewBag.SearchInput = searchInput.TrimEnd();
             }
 
             dtos = Pagination(page, dtos, 16);

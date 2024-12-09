@@ -36,6 +36,7 @@ namespace Scolly.Controllers
             if (searchInput != null)
             {
                 dtos = await _ageGroupService.GetAllByName(searchInput);
+                ViewBag.SearchInput = searchInput.TrimEnd();
             }
 
             dtos = Pagination(page, dtos, 16);

@@ -13,11 +13,13 @@ namespace Scolly.Services.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ICourseRequestService _courseRequestService;
+        private readonly ICityService _cityService;
 
-        public ChildService(ApplicationDbContext context, ICourseRequestService courseRequestService)
+        public ChildService(ApplicationDbContext context, ICourseRequestService courseRequestService, ICityService cityService)
         {
             _context = context;
             _courseRequestService = courseRequestService;
+            _cityService = cityService;
         }
 
         public async Task Add(ChildDto model)
@@ -57,10 +59,12 @@ namespace Scolly.Services.Services
                 {
                     await UnregisterChildToCourse(child.Id, course.Id);
                 }
+                string message = $"Детето {child.FirstName} {child.LastName} беше успешно изтрито, заедно със всички негови заявки и регистрации за курсове.";
+                _context.Children.Remove(child);
                 await _context.SaveChangesAsync();
-                return;
+                throw new ArgumentException(message);
             }
-            throw new ArgumentException("Не съществува дете, регистрирано с това ID.");
+            //throw new ArgumentException("Не съществува дете, регистрирано с това ID.");
         }
 
         public async Task EditById(int id, ChildDto model)
@@ -222,6 +226,7 @@ namespace Scolly.Services.Services
 
             var parent = await _context.Parents
                 .Include(x => x.User)
+                .ThenInclude(x => x.City)
                 .FirstOrDefaultAsync(x => x.Id == model.ParentId);
             if (parent != null)
             {
@@ -234,6 +239,8 @@ namespace Scolly.Services.Services
                         FirstName = parent.User.FirstName,
                         LastName = parent.User.LastName,
                         PhoneNumber = parent.User.PhoneNumber,
+                        CityDto = new CityDto() { Id = parent.User.CityId, Name = parent.User.City.Name, },
+                        CityDtoId = parent.User.CityId,
                     }
                 };
 

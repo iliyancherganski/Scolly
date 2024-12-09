@@ -16,5 +16,9 @@ namespace Scolly.Services.Services.Contracts
         Task DeleteById(int id);
         Task<CourseRequestDto?> MapData(int modelId);
         Task SetStatus(int modelId, RequestStatusDto status);
+
+        Task<List<CourseRequestDto>> GetAllRequestOfCourse(int courseId, bool onlyAccepted = false);
+        Task<List<CourseRequestDto>> GetAllRequestOfChild(int childId, bool onlyAccepted = false);
+
     }
 }

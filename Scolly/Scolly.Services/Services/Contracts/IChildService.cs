@@ -11,5 +11,6 @@ namespace Scolly.Services.Services.Contracts
         Task RequestChildRegisterToCourse(int childId, int courseId);
         Task UnregisterChildToCourse(int childId, int courseId);
         Task ManageChildRequestToCourse(int childId, int courseId, bool isAccepted);
+        //Task<string> DeleteByIdWithMessage(int childId, bool isError = false);
     }
 }

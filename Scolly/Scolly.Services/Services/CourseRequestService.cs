@@ -19,12 +19,14 @@ namespace Scolly.Services.Services
         private readonly ApplicationDbContext _context;
         private readonly IAgeGroupService _ageGroupService;
         private readonly ICourseTypeService _courseTypeService;
+        private readonly ITeacherService _teacherService;
 
-        public CourseRequestService(ApplicationDbContext context, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService)
+        public CourseRequestService(ApplicationDbContext context, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, ITeacherService teacherService)
         {
             _context = context;
             _ageGroupService = ageGroupService;
             _courseTypeService = courseTypeService;
+            _teacherService = teacherService;
         }
 
         public async Task Add(CourseRequestDto model)
@@ -92,6 +94,26 @@ namespace Scolly.Services.Services
                 }
             }
             return courseRequestDtos;
+        }
+
+        public async Task<List<CourseRequestDto>> GetAllRequestOfChild(int childId, bool onlyAccepted = false)
+        {
+            var child = await _context.Children.FirstOrDefaultAsync(x => x.Id == childId);
+            if (child == null) return new List<CourseRequestDto>();
+            var dtos = await GetAll();
+            dtos = dtos.Where(x=>x.ChildDtoId == child.Id).ToList();
+            if (onlyAccepted) return dtos.Where(x=>x.Status == RequestStatusDto.Accepted).ToList();
+            return dtos;
+        }
+
+        public async Task<List<CourseRequestDto>> GetAllRequestOfCourse(int courseId, bool onlyAccepted = false)
+        {
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == courseId);
+            if (course == null) return new List<CourseRequestDto>();
+            var dtos = await GetAll();
+            dtos = dtos.Where(x => x.CourseDtoId == course.Id).ToList();
+            if (onlyAccepted) return dtos.Where(x=>x.Status == RequestStatusDto.Accepted).ToList();
+            return dtos;
         }
 
         public async Task<CourseRequestDto?> GetById(int id)
@@ -172,6 +194,7 @@ namespace Scolly.Services.Services
                     StartDate = course.StartDate,
                     EndDate = course.EndDate,
                     Price = course.Price,
+                    TeacherDtos = await _teacherService.GetAllTeachersByCourse(course.Id),
                 };
 
                 dto.CourseDtoId = courseDto.Id;
