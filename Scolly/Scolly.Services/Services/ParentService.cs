@@ -150,5 +150,22 @@ namespace Scolly.Services.Services
 
             return dto;
         }
+
+        public async Task<ParentDto?> GetParentByUserId(string? userId)
+        {
+            if (userId == null)
+            {
+                return null;
+            }
+
+            var parent = await _context.Parents
+                .Include(x=>x.User)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+            if (parent != null)
+            {
+                return await MapData(parent.Id);
+            }
+            return null;
+        }
     }
 }

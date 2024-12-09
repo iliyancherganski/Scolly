@@ -78,7 +78,7 @@ namespace Scolly.Controllers
             var courseDtos = await _courseService.GetCoursesOfTeacher(dto.Id);
             foreach (var course in courseDtos)
             {
-                var courseRequestDtos = await _courseRequestService.GetAllRequestOfCourse(course.Id, true);
+                var courseRequestDtos = await _courseRequestService.GetAllRequestsOfCourse(course.Id, true);
                 course.CourseRequestDtos = courseRequestDtos;
             }
 

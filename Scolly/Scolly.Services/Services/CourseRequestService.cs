@@ -79,6 +79,18 @@ namespace Scolly.Services.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<int> GetAcceptedRequestsOfChildCount(int childId)
+        {
+            var child = await _context.Children
+                .Include(x => x.CourseRequests)
+                .FirstOrDefaultAsync(x => x.Id == childId);
+            if (child != null)
+            {
+                return child.CourseRequests.Where(x => x.Status == RequestStatus.Accepted).Count();
+            }
+            return 0;
+        }
+
         public async Task<List<CourseRequestDto>> GetAll()
         {
             var courseRequests = await _context.CourseRequests.ToListAsync();
@@ -96,23 +108,51 @@ namespace Scolly.Services.Services
             return courseRequestDtos;
         }
 
-        public async Task<List<CourseRequestDto>> GetAllRequestOfChild(int childId, bool onlyAccepted = false)
+        public async Task<List<CourseRequestDto>> GetAllRequestsOfChild(int childId, bool onlyAccepted, bool raw = false)
         {
             var child = await _context.Children.FirstOrDefaultAsync(x => x.Id == childId);
             if (child == null) return new List<CourseRequestDto>();
+            if (raw)
+            {
+                var dtosRaw = new List<CourseRequestDto>();
+
+                if (onlyAccepted)
+                {
+                    return dtosRaw = await _context.CourseRequests.Where(x => x.ChildId == child.Id)
+                        .Where(x=>x.Status == RequestStatus.Accepted)
+                        .Select(x => new CourseRequestDto()
+                        {
+                            Id = x.Id,
+                            ChildDtoId = child.Id,
+                            CourseDtoId = x.CourseId,
+                        })
+                        .ToListAsync();
+                }
+                else
+                {
+                    dtosRaw = await _context.CourseRequests.Where(x => x.ChildId == child.Id)
+                        .Select(x => new CourseRequestDto()
+                        {
+                            Id = x.Id,
+                            ChildDtoId = child.Id,
+                            CourseDtoId = x.CourseId,
+                        })
+                        .ToListAsync();
+                }
+            }
             var dtos = await GetAll();
-            dtos = dtos.Where(x=>x.ChildDtoId == child.Id).ToList();
-            if (onlyAccepted) return dtos.Where(x=>x.Status == RequestStatusDto.Accepted).ToList();
+            dtos = dtos.Where(x => x.ChildDtoId == child.Id).ToList();
+            if (onlyAccepted) return dtos.Where(x => x.Status == RequestStatusDto.Accepted).ToList();
             return dtos;
         }
 
-        public async Task<List<CourseRequestDto>> GetAllRequestOfCourse(int courseId, bool onlyAccepted = false)
+        public async Task<List<CourseRequestDto>> GetAllRequestsOfCourse(int courseId, bool onlyAccepted = false)
         {
             var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == courseId);
             if (course == null) return new List<CourseRequestDto>();
             var dtos = await GetAll();
             dtos = dtos.Where(x => x.CourseDtoId == course.Id).ToList();
-            if (onlyAccepted) return dtos.Where(x=>x.Status == RequestStatusDto.Accepted).ToList();
+            if (onlyAccepted) return dtos.Where(x => x.Status == RequestStatusDto.Accepted).ToList();
             return dtos;
         }
 

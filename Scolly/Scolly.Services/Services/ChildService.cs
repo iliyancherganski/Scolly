@@ -40,7 +40,10 @@ namespace Scolly.Services.Services
                 await _context.Children.AddAsync(child);
                 await _context.SaveChangesAsync();
             }
-            throw new ArgumentException("Не съществува такъв регистриран родител.");
+            else
+            {
+                throw new ArgumentException($"Сървърна грешка: детето {model.FirstName} {model.LastName} не беше регистрирано, защото не съществува родител с подаденото към него ID.");
+            }
         }
 
         public async Task DeleteById(int id)
@@ -49,22 +52,21 @@ namespace Scolly.Services.Services
                 .Include(x => x.Parent)
                 .ThenInclude(x => x.User)
                 .Include(x => x.CourseRequests)
-                .ThenInclude(x => x.Select(x => x.Course))
+                .ThenInclude(x => x.Course)
                 .FirstOrDefaultAsync(x => x.Id == id);
+
             if (child != null)
             {
                 var parent = child.Parent;
                 parent.Children.Remove(child);
-                foreach (var course in child.CourseRequests.Select(x => x.Course))
-                {
-                    await UnregisterChildToCourse(child.Id, course.Id);
-                }
-                string message = $"Детето {child.FirstName} {child.LastName} беше успешно изтрито, заедно със всички негови заявки и регистрации за курсове.";
+
+                var courseRequestIds = child.CourseRequests.Select(x => x.Id).ToList();
+                var courseRequestsToDelete = _context.CourseRequests.Where(x => courseRequestIds.Contains(x.Id));
+                _context.CourseRequests.RemoveRange(courseRequestsToDelete);
+
                 _context.Children.Remove(child);
                 await _context.SaveChangesAsync();
-                throw new ArgumentException(message);
             }
-            //throw new ArgumentException("Не съществува дете, регистрирано с това ID.");
         }
 
         public async Task EditById(int id, ChildDto model)

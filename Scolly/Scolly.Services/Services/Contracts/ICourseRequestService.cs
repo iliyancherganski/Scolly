@@ -17,8 +17,9 @@ namespace Scolly.Services.Services.Contracts
         Task<CourseRequestDto?> MapData(int modelId);
         Task SetStatus(int modelId, RequestStatusDto status);
 
-        Task<List<CourseRequestDto>> GetAllRequestOfCourse(int courseId, bool onlyAccepted = false);
-        Task<List<CourseRequestDto>> GetAllRequestOfChild(int childId, bool onlyAccepted = false);
+        Task<List<CourseRequestDto>> GetAllRequestsOfCourse(int courseId, bool onlyAccepted = false);
+        Task<List<CourseRequestDto>> GetAllRequestsOfChild(int childId, bool onlyAccepted, bool raw = false);
+        Task<int> GetAcceptedRequestsOfChildCount(int childId);
 
     }
 }

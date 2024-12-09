@@ -11,5 +11,6 @@ namespace Scolly.Services.Services.Contracts
     public interface IParentService : IBaseService<ParentDto>
     {
         Task<List<ChildDto>> GetAllChildren(int parentId);
+        Task<ParentDto?> GetParentByUserId(string? userId);
     }
 }
