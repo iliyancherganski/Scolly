@@ -6,9 +6,17 @@
 <div>
     <h1>Информация за дете</h1>
     <h3>Име: @Model.FirstName @Model.LastName</h3>
-    <p>Телефон: @Model.PhoneNumber</p>
-    <p>Родител: @Model.ParentDto.UserDto.FirstName @Model.ParentDto.UserDto.LastName</p>
-    <p>Активно регистрирано на @Model.CourseRequestsDtos.Where(x=>x.Status == RequestStatusDto.Accepted).Count() курс/курсове</p>
+    @if (Model.PhoneNumber != null)
+    {
+        <p>Телефон (на детето): @Model.PhoneNumber</p>
+    }
+    <p>Родител: <strong>@Model.ParentDto.UserDto.FirstName @Model.ParentDto.UserDto.LastName</strong> - Тел.: @Model.ParentDto.UserDto.PhoneNumber</p>
+    @{
+        int courseCount = Model.CourseRequestsDtos.Where(x => x.Status == RequestStatusDto.Accepted).Count();
+        string courseString = (courseCount == 1) ? "курс" : "курса";
+
+        <p>Активно регистрирано на @courseCount @courseString</p>
+    }
 </div>
 @if (User.IsInRole("Admin") || (User.IsInRole("Parent") && User.Identity?.Name == Model.ParentDto.UserDto.Email))
 {
@@ -68,7 +76,7 @@
 }
 
 
-@section Scripts{
+@section Scripts {
     <script>
         function confirmDelete(firstName, lastName, childId) {
             // Display a confirmation dialog

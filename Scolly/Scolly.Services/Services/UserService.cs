@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Scolly.Infrastructure.Data;
@@ -116,6 +117,11 @@ namespace Scolly.Services.Services
         public bool IsSignedIn(ClaimsPrincipal user)
         {
             return _signInManager.IsSignedIn(user);
+        }
+
+        public async Task Logout()
+        {
+            await _signInManager.SignOutAsync();
         }
 
         public async Task<UserDto?> MapData(string modelId)

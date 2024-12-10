@@ -15,8 +15,8 @@ namespace Scolly.Services.Services.Contracts
         Task EditUserById(string id, UserDto model);
         Task DeleteUserById(string id);
         Task<UserDto?> MapData(string modelId);
-
         bool IsSignedIn(ClaimsPrincipal user);
+        Task Logout();
         Task<SignInResult?> SignIn(string username, string password);
     }
 }

@@ -119,7 +119,7 @@ namespace Scolly.Services.Services
                 if (onlyAccepted)
                 {
                     return dtosRaw = await _context.CourseRequests.Where(x => x.ChildId == child.Id)
-                        .Where(x=>x.Status == RequestStatus.Accepted)
+                        .Where(x => x.Status == RequestStatus.Accepted)
                         .Select(x => new CourseRequestDto()
                         {
                             Id = x.Id,
@@ -146,10 +146,39 @@ namespace Scolly.Services.Services
             return dtos;
         }
 
-        public async Task<List<CourseRequestDto>> GetAllRequestsOfCourse(int courseId, bool onlyAccepted = false)
+        public async Task<List<CourseRequestDto>> GetAllRequestsOfCourse(int courseId, bool onlyAccepted, bool raw = false)
         {
             var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == courseId);
             if (course == null) return new List<CourseRequestDto>();
+            if (raw)
+            {
+                var dtosRaw = new List<CourseRequestDto>();
+
+                if (onlyAccepted)
+                {
+                    return dtosRaw = await _context.CourseRequests.Where(x => x.CourseId == course.Id)
+                        .Where(x => x.Status == RequestStatus.Accepted)
+                        .Select(x => new CourseRequestDto()
+                        {
+                            Id = x.Id,
+                            ChildDtoId = x.ChildId,
+                            CourseDtoId = course.Id,
+                        })
+                        .ToListAsync();
+                }
+                else
+                {
+                    return dtosRaw = await _context.CourseRequests.Where(x => x.CourseId == course.Id)
+                        .Select(x => new CourseRequestDto()
+                        {
+                            Id = x.Id,
+                            ChildDtoId = x.ChildId,
+                            CourseDtoId = course.Id,
+                        })
+                        .ToListAsync();
+                }
+            }
+
             var dtos = await GetAll();
             dtos = dtos.Where(x => x.CourseDtoId == course.Id).ToList();
             if (onlyAccepted) return dtos.Where(x => x.Status == RequestStatusDto.Accepted).ToList();
@@ -193,8 +222,6 @@ namespace Scolly.Services.Services
 
             var child = model.Child;
             if (child == null) return null;
-            //var childDto = await _childService.MapData(child.Id);
-            //if (childDto == null) return null;
             var childDto = new ChildDto()
             {
                 Id = child.Id,
@@ -209,6 +236,7 @@ namespace Scolly.Services.Services
                         Id = child.Parent.User.Id,
                         FirstName = child.Parent.User.FirstName,
                         LastName = child.Parent.User.LastName,
+                        PhoneNumber = child.Parent.User.PhoneNumber,
                     }
                 }
             };

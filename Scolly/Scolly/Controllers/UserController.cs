@@ -56,5 +56,12 @@ namespace Scolly.Controllers
             }
             return View(model);
         }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _userService.Logout();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

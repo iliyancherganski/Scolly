@@ -75,13 +75,33 @@ namespace Scolly.Services.Services
                .Include(x => x.Parent)
                .ThenInclude(x => x.User)
                .Include(x => x.CourseRequests)
-               .ThenInclude(x => x.Select(x => x.Course))
+               .ThenInclude(x => x.Course)
                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (child != null)
             {
+                var parent = await _context.Parents
+                    .Include(x=>x.Children)
+                    .FirstOrDefaultAsync(x => x.Id == child.ParentId);
+                if (parent != null && model.ParentDtoId != parent.Id)
+                {
+                    parent.Children.Remove(child);
+                    var newParent = await _context.Parents
+                        .Include(x => x.Children)
+                        .FirstOrDefaultAsync(x => x.Id == model.ParentDtoId);
+                    if (newParent != null)
+                    {
+                        child.Parent = newParent;
+                        child.ParentId = newParent.Id;
+                        parent.Children.Add(child);
+                    }
+                }
+
+
                 child.FirstName = model.FirstName;
                 child.LastName = model.LastName;
                 child.PhoneNumber = model.PhoneNumber;
+
 
                 await _context.SaveChangesAsync();
                 return;

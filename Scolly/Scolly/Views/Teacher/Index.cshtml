@@ -57,7 +57,7 @@
                     <a class="nav-link"><strong>Филтрирай по:</strong></a>
                 </li>
                 <li class="nav-item dropdown" style="margin:0">
-                    @if (ViewBag.CityId != 0)
+                    @if (ViewBag.CityId != null)
                     {
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>Градове</strong></a>
                     }
@@ -82,7 +82,7 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown" style="margin:0">
-                    @if (ViewBag.SpecialtyId != 0)
+                    @if (ViewBag.SpecialtyId != null)
                     {
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>Специалности</strong></a>
                     }
@@ -156,13 +156,17 @@
                         {
                             <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-sortByName="@ViewBag.SortByName" class="page-link">@i</a>
                         }
-                        else if (ViewBag.CityId != 0)
+                        else if (ViewBag.CityId != null)
                         {
                             <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-cityId="@ViewBag.CityId" class="page-link">@i</a>
                         }
-                        else if (ViewBag.SpecialtyId != 0)
+                        else if (ViewBag.SpecialtyId != null)
                         {
                             <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-SpecialtyId="@ViewBag.SpecialtyId" class="page-link">@i</a>
+                        }
+                        else if (ViewBag.SearchInput != null)
+                        {
+                            <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-searchInput="@ViewBag.SearchInput" class="page-link">@i</a>
                         }
                         else
                         {
@@ -179,13 +183,17 @@
                         {
                             <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-sortByName="@ViewBag.SortByName" class="page-link">@i</a>
                         }
-                        else if (ViewBag.CityId != 0)
+                        else if (ViewBag.CityId != null)
                         {
                             <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-cityId="@ViewBag.CityId" class="page-link">@i</a>
                         }
-                        else if (ViewBag.SpecialtyId != 0)
+                        else if (ViewBag.SpecialtyId != null)
                         {
                             <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-SpecialtyId="@ViewBag.SpecialtyId" class="page-link">@i</a>
+                        }
+                        else if (ViewBag.SearchInput != null)
+                        {
+                            <a asp-controller="Teacher" asp-action="Index" asp-route-page="@i" asp-route-searchInput="@ViewBag.SearchInput" class="page-link">@i</a>
                         }
                         else
                         {

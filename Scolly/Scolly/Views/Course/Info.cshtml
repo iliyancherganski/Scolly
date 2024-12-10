@@ -1,0 +1,144 @@
+﻿@using System.Globalization;
+@using Scolly.Services.DTOs.Enums
+@using Scolly.Services.Data.DTOs
+@model CourseDto
+
+<div>
+    <h1>Информация за курс</h1>
+    <h3><strong>Курс:</strong>  @Model.CourseTypeDto.Name</h3>
+    <p><strong>Възрастова група:</strong> @Model.AgeGroupDto.Name</p>
+    <p><strong>Дата на стартиране:</strong> @Model.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))</p>
+    <p><strong>Дата на приключване:</strong> @Model.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))</p>
+    <p><strong>Описание: </strong>@Model.Description</p>
+    <p><strong>Цена:</strong> @string.Format("{0:f2} лв.", Model.Price)</p>
+
+    <ul>
+        <p><strong>Учители: </strong></p>
+        @foreach (var teacher in Model.TeacherDtos)
+        {
+            <li>
+                @teacher.UserDto.FirstName @teacher.UserDto.LastName
+                <a asp-action="Info" asp-controller="Teacher" asp-route-teacherId="@teacher.Id" class="btn btn-outline-info">Информация</a>
+            </li>
+        }
+    </ul>
+</div>
+@if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+{
+    if (Model.CourseRequestDtos.Where(x => x.Status == RequestStatusDto.Accepted).Select(x => x.ChildDto).Count() > 0)
+    {
+        <h3>Записани деца:</h3>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Име на дете</th>
+                <th>Тел. на дете</th>
+                <th>Статус на заявка</th>
+                <th>Име на родител</th>
+                <th>Тел. на родител</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var courseRequest in Model.CourseRequestDtos)
+            {
+                string status = "За одобрение";
+                if (courseRequest.Status == RequestStatusDto.Accepted)
+                {
+                    status = "Записан";
+                }
+                else if (courseRequest.Status == RequestStatusDto.Rejected)
+                {
+                    status = "Отхвърлена";
+                }
+                if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                {
+                    if (courseRequest.Status == RequestStatusDto.Rejected)
+                    {
+                        <tr class="table-danger">
+                            <td>@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName</td>
+                            <td>@((courseRequest.ChildDto.PhoneNumber == null) ? "няма" : courseRequest.ChildDto.PhoneNumber)</td>
+                            <td><strong>@status</strong></td>
+                            <td>@courseRequest.ChildDto.ParentDto.UserDto.FirstName @courseRequest.ChildDto.ParentDto.UserDto.LastName</td>
+                            <td>@courseRequest.ChildDto.ParentDto.UserDto.PhoneNumber</td>
+                            <td>
+                                <a asp-action="Info" asp-controller="Child" asp-route-childId="@courseRequest.Id" class="btn btn-info">Инф. за дете</a>
+                                @if (!User.IsInRole("Teacher"))
+                                {
+                                    <a href="#" onclick="confirmDeleteRequest('@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName', '@courseRequest.Id')" class="btn btn-danger">Изтриване на заявка</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    else if (courseRequest.Status == RequestStatusDto.Pending)
+                    {
+                        <tr class="table-warning">
+                            <td>@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName</td>
+                            <td>@((courseRequest.ChildDto.PhoneNumber == null) ? "няма" : courseRequest.ChildDto.PhoneNumber)</td>
+                            <td><strong>@status</strong></td>
+                            <td>@courseRequest.ChildDto.ParentDto.UserDto.FirstName @courseRequest.ChildDto.ParentDto.UserDto.LastName</td>
+                            <td>@courseRequest.ChildDto.ParentDto.UserDto.PhoneNumber</td>
+                            <td>
+                                <a asp-action="Info" asp-controller="Child" asp-route-childId="@courseRequest.Id" class="btn btn-info">Инф. за дете</a>
+                                @if (!User.IsInRole("Teacher"))
+                                {
+                                    <a href="#" onclick="confirmDeleteRequest('@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName', '@courseRequest.Id')" class="btn btn-danger">Изтриване на заявка</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    else if (courseRequest.Status == RequestStatusDto.Accepted)
+                    {
+                        <tr class="table-info">
+                            <td>@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName</td>
+                            <td>@((courseRequest.ChildDto.PhoneNumber == null) ? "няма" : courseRequest.ChildDto.PhoneNumber)</td>
+                            <td><strong>@status</strong></td>
+                            <td>@courseRequest.ChildDto.ParentDto.UserDto.FirstName @courseRequest.ChildDto.ParentDto.UserDto.LastName</td>
+                            <td>@courseRequest.ChildDto.ParentDto.UserDto.PhoneNumber</td>
+                            <td>
+                                <a asp-action="Info" asp-controller="Child" asp-route-childId="@courseRequest.Id" class="btn btn-info">Инф. за дете</a>
+                                @if (!User.IsInRole("Teacher"))
+                                {
+                                    <a href="#" onclick="confirmDeleteRequest('@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName', '@courseRequest.Id')" class="btn btn-danger">Изтриване на заявка</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+}
+@if (User.IsInRole("Admin"))
+{
+    <a asp-controller="Course" asp-action="Edit" asp-route-courseId="@Model.Id" class="btn btn-warning">Редактиране</a>
+    <a href="#" onclick="confirmDelete('@Model.CourseTypeDto.Name', '@Model.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG")) - @Model.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))', '@Model.Id')" class="btn btn-danger">Изтриване</a>
+}
+<a asp-controller="Course" asp-action="Index" class="btn btn-primary">Към всички курсове</a>
+
+
+@section Scripts {
+    <script>
+        function confirmDelete(courseType, date, courseId) {
+            // Display a confirmation dialog
+            var result = confirm("Сигурни ли сте, че искате да изтриете курс " + courseType + " - " + date + "?");
+
+            // If the user clicks "OK," proceed with the deletion
+            if (result) {
+                // Redirect to the Delete action with the childId
+                window.location.href = '/Course/Delete?courseId=' + courseId;
+            }
+        }
+        function confirmDeleteRequest(childName, requestId) {
+            // Display a confirmation dialog
+            var result = confirm("Сигурни ли сте, че искате да изтриете заявката на " + ChildName + " за този курс?");
+
+            // If the user clicks "OK," proceed with the deletion
+            if (result) {
+                // Redirect to the Delete action with the childId
+                window.location.href = '/Course/DeleteRequest?requestId=' + requestId;
+            }
+        }
+    </script>
+}

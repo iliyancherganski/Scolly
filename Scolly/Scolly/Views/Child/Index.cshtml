@@ -128,7 +128,13 @@
                     <h5 class="card-header">@child.FirstName @child.LastName</h5>
                 </div>
                 <div>
-                    <p class="card-title">Активно регистрирано на: @child.CourseRequestsDtos.Count() курса</p>
+                    @{
+                        int courseCount = child.CourseRequestsDtos.Count();
+                        string courseString = (courseCount == 1) ? "курс" : "курса";
+
+                        <p>Активно регистрирано на @courseCount @courseString</p>
+                    }
+
                     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
                     {
                         <p class="card-title">Тел. за връзка: @child.PhoneNumber</p>

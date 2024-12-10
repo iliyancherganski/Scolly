@@ -195,6 +195,23 @@ namespace Scolly.Services.Services
             return teacherDto;
         }
 
+        public async Task<TeacherDto?> GetTeacherByUserId(string? userId)
+        {
+            if (userId == null)
+            {
+                return null;
+            }
+
+            var teacher = await _context.Teachers
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+            if (teacher != null)
+            {
+                return await MapData(teacher.Id);
+            }
+            return null;
+        }
+
         public async Task<TeacherDto?> MapData(int modelId)
         {
             var model = await _context.Teachers

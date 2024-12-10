@@ -58,6 +58,23 @@ namespace Scolly.Services.Services
                     }
                 }
             }
+
+            var childDtos = await _childService.GetAllByName(name);
+            foreach(var childDto in childDtos)
+            {
+                parent = await _context.Parents
+                    .Include(x => x.Children)
+                    .FirstOrDefaultAsync(x => x.Children.Select(x=>x.Id).Contains(childDto.Id));
+                if (parent != null)
+                {
+                    parentDto = await MapData(parent.Id);
+                    if (parentDto != null && !parentDtos.Select(x=>x.Id).Contains(parentDto.Id))
+                    {
+                        parentDtos.Add(parentDto);
+                    }
+                }
+            }
+
             return parentDtos;
         }
 

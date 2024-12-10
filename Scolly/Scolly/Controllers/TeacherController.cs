@@ -41,14 +41,14 @@ namespace Scolly.Controllers
 
             }
 
-            ViewBag.CityId = 0;
+            ViewBag.CityId = null;
             if (cityId != null)
             {
                 dtos = dtos.Where(x => x.UserDto.CityDtoId == cityId).ToList();
                 ViewBag.CityId = cityId;
             }
 
-            ViewBag.SpecialtyId = 0;
+            ViewBag.SpecialtyId = null;
             if (specialtyId != null)
             {
                 dtos = dtos.Where(x => x.SpecialtyDtos.Any(x => x.Id == specialtyId)).ToList();
@@ -78,7 +78,7 @@ namespace Scolly.Controllers
             var courseDtos = await _courseService.GetCoursesOfTeacher(dto.Id);
             foreach (var course in courseDtos)
             {
-                var courseRequestDtos = await _courseRequestService.GetAllRequestsOfCourse(course.Id, true);
+                var courseRequestDtos = await _courseRequestService.GetAllRequestsOfCourse(course.Id, true, true);
                 course.CourseRequestDtos = courseRequestDtos;
             }
 

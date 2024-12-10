@@ -282,6 +282,7 @@ namespace Scolly.Services.Services
 
             return dto;
         }
+
         public async Task<List<CourseDto>> GetCoursesOfTeacher(int teacherId)
         {
             var courseDtos = new List<CourseDto>();
