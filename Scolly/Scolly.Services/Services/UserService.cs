@@ -192,15 +192,19 @@ namespace Scolly.Services.Services
             return null;
         }
 
-        public async Task<SignInResult?> SignIn(string username, string password)
+        public async Task<bool> SignIn(string username, string password)
         {
             var user = _context.Users.FirstOrDefault(x => (x.UserName != null && x.UserName.ToUpper() == username.ToUpper()) || (x.Email != null && x.Email.ToUpper() == username.ToUpper()));
             if (user == null || user.UserName == null)
             {
-                throw new ArgumentException("Невалиден имейл или парола!");
+                return false;
             }
             var result = await _signInManager.PasswordSignInAsync(user.UserName, password, true, lockoutOnFailure: false);
-            return result;
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
         }
 
         private User CreateUser()
