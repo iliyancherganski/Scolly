@@ -104,7 +104,6 @@ namespace Scolly.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, "Акаунтът беше регистриран, но се получи грешка при влизането в акаунта. Моля, опитайте отново.");
-                        return View(model);
                     }
                 }
             }
@@ -136,18 +135,39 @@ namespace Scolly.Controllers
                 return View(model);
             }
             return RedirectToAction("Index", "Home");
-            /*Id
-            FirstName
-            MiddleName
-            LastName
-            CityId
-            Address
-            PhoneNumber
-            Email
-            Password
-            ConfirmPassword
-            ScpecialyIds 
-            isTeacher*/
+        }
+
+        public async Task<IActionResult> RegisterTeacher(RegisterTeacherViewModel model)
+        {
+            if (!_userService.IsSignedIn(User))
+            {
+                if (ModelState.IsValid)
+                {
+                    var userDto = new UserDto();
+                    userDto.FirstName = model.FirstName;
+                    userDto.MiddleName = model.MiddleName;
+                    userDto.LastName = model.LastName;
+                    userDto.CityDtoId = model.CityId;
+                    userDto.Address = model.Address;
+                    userDto.Email = model.Email;
+                    userDto.Password = model.Password;
+                    userDto.PhoneNumber = model.PhoneNumber;
+
+                    var teacherDto = new TeacherDto();
+                    teacherDto.UserDto = userDto;
+                    foreach (var id in model.ScpecialyIds)
+                    {
+                        teacherDto.SpecialtyDtos.Add(new SpecialtyDto() { Id = id });
+                    }
+
+                    await _teacherService.Add(teacherDto);
+
+                    return RedirectToAction("Index", "Teacher");
+                }
+            }
+            await SortedCitiesInViewBag();
+            await SortedSpecialtiesInViewBag();
+            return View(model);
         }
 
     }
