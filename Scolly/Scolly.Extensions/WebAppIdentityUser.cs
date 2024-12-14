@@ -16,9 +16,16 @@ namespace Scolly.Extensions
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();*/
             builder.Services.AddIdentity<User, IdentityRole>
-                (options => options.SignIn.RequireConfirmedAccount = true)
+                (options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
             return builder;
         }
     }

@@ -263,7 +263,8 @@ namespace Scolly.Services.Services
                         PhoneNumber = parent.User.PhoneNumber,
                         CityDto = new CityDto() { Id = parent.User.CityId, Name = parent.User.City.Name, },
                         CityDtoId = parent.User.CityId,
-                    }
+                    },
+                    UserDtoId = parent.User.Id,
                 };
 
                 dto.ParentDtoId = model.ParentId;

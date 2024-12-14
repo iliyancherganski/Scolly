@@ -64,6 +64,7 @@ namespace Scolly.Services.Services
                 await _context.TeachersSpecialties.AddAsync(ts);
                 teacher.TeacherSpecialties.Add(ts);
             }
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteById(int id)
@@ -91,11 +92,14 @@ namespace Scolly.Services.Services
             string userId = teacher.UserId;
             _context.Teachers.Remove(teacher);
             await _userService.DeleteUserById(userId);
+            await _context.SaveChangesAsync();
         }
 
         public async Task EditById(int id, TeacherDto model)
         {
-            var teacher = await _context.Teachers.FirstOrDefaultAsync(x => x.Id == id);
+            var teacher = await _context.Teachers
+                .Include(x=>x.User)
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (teacher == null) return;
             var teacherSpecialties = await _context.TeachersSpecialties.Where(x => x.TeacherId == teacher.Id).ToListAsync();
 
@@ -129,7 +133,9 @@ namespace Scolly.Services.Services
                 teacher.TeacherSpecialties.Add(ts);
             }
 
-            await _userService.EditUserById(model.UserDtoId, model.UserDto);
+            await _userService.EditUserById(teacher.User.Id, model.UserDto);
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<TeacherDto>> GetAll()

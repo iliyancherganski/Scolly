@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Services.Contracts;
 
@@ -59,6 +60,11 @@ namespace Scolly.Controllers
             dtos = Pagination(page, dtos, 12);
 
             return View(dtos);
+        }
+
+        public IActionResult Delete(int parentId)
+        {
+            return RedirectToAction("Delete", "User", new { id = parentId, isTeacher = false });
         }
     }
 }

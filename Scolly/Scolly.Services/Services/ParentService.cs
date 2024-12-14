@@ -60,15 +60,15 @@ namespace Scolly.Services.Services
             }
 
             var childDtos = await _childService.GetAllByName(name);
-            foreach(var childDto in childDtos)
+            foreach (var childDto in childDtos)
             {
                 parent = await _context.Parents
                     .Include(x => x.Children)
-                    .FirstOrDefaultAsync(x => x.Children.Select(x=>x.Id).Contains(childDto.Id));
+                    .FirstOrDefaultAsync(x => x.Children.Select(x => x.Id).Contains(childDto.Id));
                 if (parent != null)
                 {
                     parentDto = await MapData(parent.Id);
-                    if (parentDto != null && !parentDtos.Select(x=>x.Id).Contains(parentDto.Id))
+                    if (parentDto != null && !parentDtos.Select(x => x.Id).Contains(parentDto.Id))
                     {
                         parentDtos.Add(parentDto);
                     }
@@ -112,23 +112,34 @@ namespace Scolly.Services.Services
         public async Task DeleteById(int id)
         {
             var parent = await _context.Parents
-                .Include(x=>x.Children)
+                .Include(x => x.Children)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (parent == null) return;
 
-            foreach (var child in parent.Children)
+            var childIds = parent.Children.Select(x => x.Id).ToList();
+
+            foreach (var childId in childIds)
             {
-                await _childService.DeleteById(child.Id);
+                await _childService.DeleteById(childId);
             }
 
             string userId = parent.UserId;
             _context.Parents.Remove(parent);
             await _userService.DeleteUserById(userId);
+            await _context.SaveChangesAsync();
         }
 
         public async Task EditById(int id, ParentDto model)
         {
-            await _userService.EditUserById(model.UserDtoId, model.UserDto);
+            var parent = await _context.Parents
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (parent != null)
+            {
+                await _userService.EditUserById(parent.User.Id, model.UserDto);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<ParentDto?> MapData(int modelId)
@@ -176,7 +187,7 @@ namespace Scolly.Services.Services
             }
 
             var parent = await _context.Parents
-                .Include(x=>x.User)
+                .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
             if (parent != null)
             {

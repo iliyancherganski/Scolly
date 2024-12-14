@@ -18,5 +18,6 @@ namespace Scolly.Services.Services.Contracts
         bool IsSignedIn(ClaimsPrincipal user);
         Task Logout();
         Task<bool> SignIn(string username, string password);
+        Task<bool> UserWithEmailExists(string email);
     }
 }

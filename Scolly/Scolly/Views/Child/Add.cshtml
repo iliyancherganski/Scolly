@@ -16,6 +16,10 @@
             <span asp-validation-for="ParentId"></span>
         </div>
     }
+    else
+    {
+        <input type="hidden" asp-for="ParentId" value="@Model.ParentId" />
+    }
 
     <div class="form-group" style="width:500px">
         <label asp-for="FirstName">Собствено име</label>

@@ -4,38 +4,38 @@
 @inject IUserService userService
 
 <ul class="navbar-nav">
-	@if (userService.IsSignedIn(User))
-	{
-		if (User.IsInRole("Admin"))
-		{
-			<li class="nav-item">
-				<a class="nav-link" asp-controller="User" asp-action="RegisterStaff">Регистрация на учители</a>
-			</li>
-		}
-		<li class="nav-item">
-			@if (!User.IsInRole("Admin"))
-			{
-				<form class="form-inline" asp-controller="User" asp-action="DirectEdit">
-					<button type="submit" class="nav-link btn btn-link" title="Редактиране на акаунт">Здравейте, @User.Identity?.Name</button>
-				</form>
-				@* <a class="nav-link" asp-controller="User" asp-action="Delete" title="Редактиране на акаунт">Здравейте, @User.Identity?.Name</a> *@
-			}
-			else
-			{
-				<a class="nav-link">Здравейте, администратор!</a>
-			}
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" asp-controller="User" asp-action="Logout">Излизане</a>
-		</li>
-	}
-	else
-	{
-		<li class="nav-item">
-			<a class="nav-link" asp-controller="User" asp-action="Register">Регистрация</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" asp-controller="User" asp-action="Login">Вход</a>
-		</li>
-	}
+    @if (userService.IsSignedIn(User))
+    {
+        if (User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="User" asp-action="Register" asp-route-isTeacher="@true">Регистрация на учител</a>
+            </li>
+        }
+        <li class="nav-item">
+            @if (!User.IsInRole("Admin"))
+            {
+                <form class="form-inline" asp-controller="User" asp-action="DirectEdit">
+                    <button type="submit" class="nav-link btn btn-link" title="Редактиране на акаунт">Здравейте, @User.Identity?.Name</button>
+                </form>
+                @* <a class="nav-link" asp-controller="User" asp-action="Delete" title="Редактиране на акаунт">Здравейте, @User.Identity?.Name</a> *@
+            }
+            else
+            {
+                <a class="nav-link">Здравейте, администратор!</a>
+            }
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="User" asp-action="Logout">Излизане</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="User" asp-action="Register">Регистрация</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="User" asp-action="Login">Вход</a>
+        </li>
+    }
 </ul>

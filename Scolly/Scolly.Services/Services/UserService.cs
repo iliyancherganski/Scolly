@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,7 +58,7 @@ namespace Scolly.Services.Services
                 user.CityId = city.Id;
                 user.City = city;
             }
-            user.CityId = model.CityDtoId;
+            else return;
 
             await _context.SaveChangesAsync();
         }
@@ -170,6 +171,8 @@ namespace Scolly.Services.Services
                 user.LastName = model.LastName;
                 user.Address = model.Address;
                 user.PhoneNumber = model.PhoneNumber;
+                user.Email = model.Email.ToLower();
+                user.NormalizedEmail = model.Email.ToUpper();
                 user.LockoutEnabled = false;
                 user.EmailConfirmed = true;
                 var city = await _context.Cities.FirstOrDefaultAsync(x => x.Id == model.CityDtoId);
@@ -205,6 +208,17 @@ namespace Scolly.Services.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<bool> UserWithEmailExists(string email)
+        {
+            email = email.ToUpper();
+            var users = await _context.Users.Where(x => x.Email != null).ToListAsync();
+            if (users.FirstOrDefault(x=>x.Email.ToUpper() == email) == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         private User CreateUser()

@@ -113,7 +113,7 @@
                 <div class="card-buttons">
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-controller="User" asp-action="Edit" asp-route-id="@parent.Id" asp-route-role="Parent" class="btn btn-warning">Редактиране</a>
+                        <a asp-controller="User" asp-action="Edit" asp-route-id="@parent.Id" asp-route-isTeacher="@false" class="btn btn-warning">Редактиране</a>
                         <a href="#" onclick="confirmDelete('@parent.UserDto.FirstName', '@parent.UserDto.LastName', '@parent.Id')" class="btn btn-danger">Изтриване</a>
                     }
                 </div>

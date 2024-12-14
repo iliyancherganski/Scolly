@@ -135,7 +135,7 @@
                     @if (User.IsInRole("Admin") ||
                    (User.IsInRole("Teacher") && User.Identity?.Name == teacher.UserDto.Email))
                     {
-                        <a asp-controller="User" asp-action="Edit" asp-route-id="@teacher.Id" asp-route-role="Teacher" class="btn btn-warning">Редактиране</a>
+                        <a asp-controller="User" asp-action="Edit" asp-route-id="@teacher.Id" asp-route-isTeacher="@true" class="btn btn-warning">Редактиране</a>
                         <a href="#" onclick="confirmDelete('@teacher.UserDto.FirstName', '@teacher.UserDto.LastName', '@teacher.Id')" class="btn btn-danger">Изтриване</a>
                     }
                 </div>
@@ -209,7 +209,7 @@
 
 @if (User.IsInRole("Admin"))
 {
-    <a asp-controller="User" asp-action="RegisterStaff" asp-route-role="Teacher" class="btn btn-primary">Регистриране на нов служител</a>
+    <a asp-controller="User" asp-action="Register" asp-route-teacher="@true" class="btn btn-primary">Регистриране на нов служител</a>
 }
 
 @section Scripts {

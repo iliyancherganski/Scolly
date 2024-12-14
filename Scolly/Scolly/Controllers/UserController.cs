@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
 using Scolly.Services.Services.Contracts;
 using Scolly.ViewModels.User;
-using System.ComponentModel.DataAnnotations;
 
 namespace Scolly.Controllers
 {
@@ -60,12 +59,21 @@ namespace Scolly.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(bool isTeacher = false)
         {
-            if (!_userService.IsSignedIn(User))
+            if (!_userService.IsSignedIn(User) && !isTeacher)
             {
                 RegisterFormViewModel model = new RegisterFormViewModel();
                 await SortedCitiesInViewBag();
+                return View(model);
+            }
+            else if (_userService.IsSignedIn(User) &&
+                isTeacher &&
+                User.IsInRole("Admin"))
+            {
+                RegisterFormViewModel model = new RegisterFormViewModel(true);
+                await SortedCitiesInViewBag();
+                await SortedSpecialtiesInViewBag();
                 return View(model);
             }
             return RedirectToAction("Index", "Home");
@@ -76,99 +84,275 @@ namespace Scolly.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterFormViewModel model)
         {
-            if (!_userService.IsSignedIn(User))
+            if ((model.SpecialtyIds == null && _userService.IsSignedIn(User)) ||
+                (model.SpecialtyIds != null && _userService.IsSignedIn(User) && !User.IsInRole("Admin")))
             {
-                if (ModelState.IsValid)
+                return RedirectToAction("Index", "Home");
+            }
+
+            else if (ModelState.IsValid)
+            {
+                var userDto = new UserDto();
+                userDto.FirstName = model.FirstName;
+                userDto.MiddleName = model.MiddleName;
+                userDto.LastName = model.LastName;
+                userDto.CityDtoId = model.CityId;
+                userDto.Address = model.Address;
+                userDto.Email = model.Email;
+                userDto.Password = model.Password;
+                userDto.PhoneNumber = model.PhoneNumber;
+
+
+                if (await _userService.UserWithEmailExists(model.Email))
                 {
-                    var userDto = new UserDto();
-                    userDto.FirstName = model.FirstName;
-                    userDto.MiddleName = model.MiddleName;
-                    userDto.LastName = model.LastName;
-                    userDto.CityDtoId = model.CityId;
-                    userDto.Address = model.Address;
-                    userDto.Email = model.Email;
-                    userDto.Password = model.Password;
-                    userDto.PhoneNumber = model.PhoneNumber;
-
-                    var parentDto = new ParentDto();
-                    parentDto.UserDto = userDto;
-
-                    await _parentService.Add(parentDto);
-
-                    var result = await _userService.SignIn(model.Email, model.Password);
-
-                    if (result)
+                    ModelState.AddModelError(string.Empty, "Вече има акаунт, който е регистриран с този имейл.");
+                }
+                else
+                {
+                    // IF PARENT
+                    if (model.SpecialtyIds == null)
                     {
-                        return RedirectToAction("Index", "Home");
+                        var parentDto = new ParentDto();
+                        parentDto.UserDto = userDto;
+                        await _parentService.Add(parentDto);
+                        ModelState.AddModelError(string.Empty, "Акаунтът беше регистриран, но се получи грешка при влизането в акаунта. Моля, опитайте отново.");
+
+                        var result = await _userService.SignIn(model.Email, model.Password);
+                        if (result)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "Акаунтът беше регистриран, но се получи грешка при влизането в акаунта. Моля, опитайте отново.");
+                        }
+
+                    }
+                    // IF TEACHER
+                    else
+                    {
+                        var teacherDto = new TeacherDto();
+                        teacherDto.UserDto = userDto;
+                        foreach (var id in model.SpecialtyIds)
+                        {
+                            teacherDto.SpecialtyDtos.Add(new SpecialtyDto() { Id = id });
+                        }
+                        await _teacherService.Add(teacherDto);
+                        return RedirectToAction("Index", "Teacher");
+
+                    }
+                }
+            }
+
+            if (model.SpecialtyIds != null)
+            {
+                await SortedSpecialtiesInViewBag();
+            }
+            await SortedCitiesInViewBag();
+            return View(model);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, bool isTeacher = false)
+        {
+            var model = new EditAccountViewModel();
+            var user = new UserDto();
+            var specialtyIds = new List<int>();
+            string? userId = GetUserId();
+
+            if (userId == null)
+            {
+                TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (isTeacher)
+            {
+                var teacher = await _teacherService.GetById(id);
+
+                if (teacher != null &&
+                    (User.IsInRole("Admin") ||
+                        (User.IsInRole("Teacher") && await _teacherService.GetTeacherByUserId(userId) != null)))
+                {
+                    user = teacher.UserDto;
+                    specialtyIds = teacher.SpecialtyDtos.Select(x => x.Id).ToList();
+                    model.SpecialtyIds = specialtyIds;
+                    model.IsTeacher = true;
+                    model.Id = teacher.Id;
+
+                    await SortedSpecialtiesInViewBag();
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                    return RedirectToAction("Index", "Home");
+                }
+
+            }
+            else
+            {
+                var parent = await _parentService.GetById(id);
+                if (parent != null &&
+                    (User.IsInRole("Admin") ||
+                        (User.IsInRole("Parent") && await _parentService.GetParentByUserId(userId) != null)))
+                {
+                    user = parent.UserDto;
+                    model.IsTeacher = false;
+                    model.Id = parent.Id;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            if (user != null)
+            {
+                model.FirstName = user.FirstName;
+                model.MiddleName = user.MiddleName;
+                model.LastName = user.LastName;
+                model.Address = user.Address;
+                model.PhoneNumber = user.PhoneNumber;
+                model.CityId = user.CityDtoId;
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            await SortedCitiesInViewBag();
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditAccountViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new UserDto();
+                string? userId = GetUserId();
+
+                if (userId == null)
+                {
+                    TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                user.FirstName = model.FirstName;
+                user.MiddleName = model.MiddleName;
+                user.LastName = model.LastName;
+                user.Address = model.Address;
+                user.PhoneNumber = model.PhoneNumber;
+                user.CityDtoId = model.CityId;
+
+                if (model.IsTeacher)
+                {
+                    var teacher = new TeacherDto();
+
+                    if (User.IsInRole("Admin") ||
+                        (User.IsInRole("Teacher") && await _teacherService.GetTeacherByUserId(userId) != null))
+                    {
+                        teacher.Id = model.Id;
+                        teacher.SpecialtyDtos = model.SpecialtyIds.Select(x => new SpecialtyDto() { Id = x }).ToList();
+                        teacher.UserDto = user;
+
+                        await _teacherService.EditById(teacher.Id, teacher);
+                        return RedirectToAction("Index", "Teacher");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Акаунтът беше регистриран, но се получи грешка при влизането в акаунта. Моля, опитайте отново.");
+                        TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                else
+                {
+                    var parent = new ParentDto();
+
+                    if (User.IsInRole("Admin") ||
+                        (User.IsInRole("Parent") && await _parentService.GetParentByUserId(userId) != null))
+                    {
+                        parent.Id = model.Id;
+                        parent.UserDto = user;
+
+                        await _parentService.EditById(parent.Id, parent);
+                        return RedirectToAction("Index", "Parent");
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }
             await SortedCitiesInViewBag();
+            if (model.IsTeacher)
+            {
+                await SortedSpecialtiesInViewBag();
+            }
             return View(model);
         }
-        /*Id
-        FirstName
-        MiddleName
-        LastName
-        CityId
-        Address
-        PhoneNumber
-        Email
-        Password
-        ConfirmPassword
-        ScpecialyIds 
-        isTeacher*/
 
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegisterTeacher()
+        [Authorize(Roles = "Parent, Teacher")]
+        public async Task<IActionResult> DirectEdit()
         {
-            var userDto = new UserDto();
-            if (!_userService.IsSignedIn(User))
+            string? userId = GetUserId();
+
+            if (userId == null)
             {
-                var model = new RegisterTeacherViewModel();
-                await SortedCitiesInViewBag();
-                await SortedSpecialtiesInViewBag();
-                return View(model);
+                TempData["ErrorMessage"] = "Получи се грешка при потвърждаването самоличността на потребителя. ";
+                return RedirectToAction("Index", "Home");
             }
+
+            if (User.IsInRole("Parent"))
+            {
+                var parent = await _parentService.GetParentByUserId(userId);
+                if (parent != null)
+                {
+                    return RedirectToAction("Edit", new { id = parent.Id, isTeacher = false });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else if (User.IsInRole("Teacher"))
+            {
+                var teacher = await _teacherService.GetTeacherByUserId(userId);
+                if (teacher != null)
+                {
+                    return RedirectToAction("Edit", new { id = teacher.Id, isTeacher = true });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> RegisterTeacher(RegisterTeacherViewModel model)
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id, bool isTeacher = false)
         {
-            if (!_userService.IsSignedIn(User))
+            if (User.IsInRole("Admin"))
             {
-                if (ModelState.IsValid)
+                if (!isTeacher)
                 {
-                    var userDto = new UserDto();
-                    userDto.FirstName = model.FirstName;
-                    userDto.MiddleName = model.MiddleName;
-                    userDto.LastName = model.LastName;
-                    userDto.CityDtoId = model.CityId;
-                    userDto.Address = model.Address;
-                    userDto.Email = model.Email;
-                    userDto.Password = model.Password;
-                    userDto.PhoneNumber = model.PhoneNumber;
+                    await _parentService.DeleteById(id);
+                    return RedirectToAction("Index", "Parent");
 
-                    var teacherDto = new TeacherDto();
-                    teacherDto.UserDto = userDto;
-                    foreach (var id in model.ScpecialyIds)
-                    {
-                        teacherDto.SpecialtyDtos.Add(new SpecialtyDto() { Id = id });
-                    }
-
-                    await _teacherService.Add(teacherDto);
-
+                }
+                else
+                {
+                    await _teacherService.DeleteById(id);
                     return RedirectToAction("Index", "Teacher");
                 }
             }
-            await SortedCitiesInViewBag();
-            await SortedSpecialtiesInViewBag();
-            return View(model);
-        }
 
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

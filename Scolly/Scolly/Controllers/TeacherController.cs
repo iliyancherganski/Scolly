@@ -87,5 +87,9 @@ namespace Scolly.Controllers
             return View(dto);
         }
 
+        public IActionResult Delete(int teacherId)
+        {
+            return RedirectToAction("Delete", "User", new { id = teacherId, isTeacher = true });
+        }
     }
 }
