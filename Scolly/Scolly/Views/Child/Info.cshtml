@@ -3,6 +3,14 @@
 @using System.Globalization;
 @model ChildDto
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <div>
     <h1>Информация за дете</h1>
     <h3>Име: @Model.FirstName @Model.LastName</h3>
@@ -65,7 +73,7 @@
 }
 @if (User.IsInRole("Admin") || (User.IsInRole("Parent") && User.Identity?.Name == Model.ParentDto.UserDto.Email))
 {
-    <a asp-controller="Child" asp-action="SignInToCourse" asp-route-childId="@Model.Id" class="btn btn-success">Записване на курс</a>
+    <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@Model.Id" class="btn btn-success">Записване на курс</a>
     <a asp-controller="Child" asp-action="Edit" asp-route-childId="@Model.Id" class="btn btn-warning">Редактиране</a>
     <a href="#" onclick="confirmDelete('@Model.FirstName', '@Model.LastName', '@Model.Id')" class="btn btn-danger">Изтриване</a>
     <a asp-controller="Child" asp-action="Index" class="btn btn-primary">Всички деца</a>

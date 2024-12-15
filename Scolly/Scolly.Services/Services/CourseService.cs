@@ -159,6 +159,33 @@ namespace Scolly.Services.Services
 
         }
 
+        public async Task<List<CourseDto>> GetAllWithNoRequestsFromChild(int childId)
+        {
+            var courses = await _context.Courses
+                .Include(x=>x.CourseRequests)
+                .ThenInclude(x=>x.Child)
+                .ToListAsync();
+            var courseDtos = new List<CourseDto>();
+            var courseDto = new CourseDto();
+
+            foreach (var course in courses)
+            {
+                if (course != null)
+                {
+                    if (!course.CourseRequests.Select(x=>x.ChildId).Contains(childId))
+                    {
+                        courseDto = await MapData(course.Id);
+                        if (courseDto != null)
+                        {
+                            courseDtos.Add(courseDto);
+                        }
+                    }
+                }
+            }
+            return courseDtos;
+        }
+
+
         public async Task<List<CourseDto>> GetAll()
         {
             var courses = await _context.Courses.ToListAsync();

@@ -6,6 +6,7 @@ namespace Scolly.Services.Services.Contracts
     public interface ICourseService
     {
         Task<List<CourseDto>> GetAll();
+        Task<List<CourseDto>> GetAllWithNoRequestsFromChild(int childId);
         Task<CourseDto?> GetById(int id);
         Task Add(CourseDto model);
         Task EditById(int id, CourseDto model);

@@ -46,6 +46,7 @@ namespace Scolly.Services.Services
                 Child = child,
                 CourseId = course.Id,
                 Course = course,
+                Status = RequestStatus.Pending,
             };
             await _context.CourseRequests.AddAsync(courseRequest);
 

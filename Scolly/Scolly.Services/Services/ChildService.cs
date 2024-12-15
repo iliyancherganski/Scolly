@@ -4,6 +4,7 @@ using Scolly.Infrastructure.Data;
 using Scolly.Infrastructure.Data.Enums;
 using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
+using Scolly.Services.DTOs.Enums;
 using Scolly.Services.Services.Contracts;
 using System.Runtime.ExceptionServices;
 
@@ -81,7 +82,7 @@ namespace Scolly.Services.Services
             if (child != null)
             {
                 var parent = await _context.Parents
-                    .Include(x=>x.Children)
+                    .Include(x => x.Children)
                     .FirstOrDefaultAsync(x => x.Id == child.ParentId);
                 if (parent != null && model.ParentDtoId != parent.Id)
                 {
@@ -171,7 +172,7 @@ namespace Scolly.Services.Services
             return courseDtos;
         }
 
-        public async Task<List<CourseRequestDto>> GetAllRequests(int childId)
+        public async Task<List<CourseRequestDto>> GetAllRequests(int childId, RequestStatusDto? status = null)
         {
             var child = await _context.Children
                .FirstOrDefaultAsync(x => x.Id == childId);
@@ -180,6 +181,12 @@ namespace Scolly.Services.Services
             if (child == null) return courseRequestDtos;
 
             courseRequestDtos = await _courseRequestService.GetAll();
+
+            if (status != null)
+            {
+                courseRequestDtos = courseRequestDtos.Where(x => x.Status == status).ToList();
+            }
+
             courseRequestDtos = courseRequestDtos.Where(x => x.ChildDtoId == child.Id).ToList();
             return courseRequestDtos;
         }

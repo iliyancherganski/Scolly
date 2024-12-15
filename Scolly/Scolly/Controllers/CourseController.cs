@@ -229,5 +229,17 @@ namespace Scolly.Controllers
             await _courseService.DeleteById(courseId);
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteRequest(int requestId)
+        {
+            var dto = await _courseRequestService.GetById(requestId);
+            if (dto != null)
+            {
+                await _courseRequestService.DeleteById(requestId);
+                return RedirectToAction("Info", new { courseId = dto.CourseDtoId});
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

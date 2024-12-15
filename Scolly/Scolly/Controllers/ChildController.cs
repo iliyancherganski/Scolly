@@ -17,13 +17,15 @@ namespace Scolly.Controllers
     {
         private readonly IChildService _childService;
         private readonly ICourseRequestService _courseRequestService;
+        private readonly ICourseService _courseService;
         private readonly IParentService _parentService;
 
-        public ChildController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, IChildService childService, ICourseRequestService courseRequestService, IParentService parentService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
+        public ChildController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, IChildService childService, ICourseRequestService courseRequestService, IParentService parentService, ICourseService courseService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
         {
             _childService = childService;
             _courseRequestService = courseRequestService;
             _parentService = parentService;
+            _courseService = courseService;
         }
 
         public async Task<IActionResult> Index(int? page,
@@ -268,6 +270,92 @@ namespace Scolly.Controllers
 
                 return View(model);
             }
+        }
+
+        [Authorize(Roles = "Admin, Parent")]
+        public async Task<IActionResult> SignUpToCourse(int childId,
+            int? page = null,
+            int? courseTypeId = null,
+            int? ageGroupId = null)
+        {
+            var userId = GetUserId();
+
+            ViewBag.ChildId = childId;
+            ViewBag.CourseTypeId = courseTypeId;
+            ViewBag.AgeGroupId = ageGroupId;
+
+            if (userId == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var child = await _childService.GetById(childId);
+            if (child != null)
+            {
+                if (User.IsInRole("Admin") ||
+                    (User.IsInRole("Parent") & child.ParentDto.UserDtoId == userId))
+                {
+                    var model = await _courseService.GetAllWithNoRequestsFromChild(child.Id);
+
+                    ViewBag.ChildName = child.FirstName + " " + child.LastName;
+
+                    if (courseTypeId != null)
+                    {
+                        model = model.Where(x => x.CourseTypeDto.Id == courseTypeId).ToList();
+                    }
+                    if (ageGroupId != null)
+                    {
+                        model = model.Where(x => x.AgeGroupDto.Id == ageGroupId).ToList();
+                    }
+
+                    foreach (var dto in model)
+                    {
+                        dto.CourseRequestDtos = await _courseRequestService.GetAllRequestsOfChild(dto.Id, true, true);
+                    }
+                    model = model.Where(x=>x.EndDate > DateTime.Now).OrderBy(x => x.CourseTypeDto.Name).ThenBy(x => x.AgeGroupDto.Name).ThenBy(x => x.StartDate).ToList();
+
+                    await SortedCourseTypeInViewBag();
+                    await SortedAgeGroupInViewBag();
+
+                    model = Pagination(page, model, 16);
+
+                    return View(model);
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin, Parent")]
+        public async Task<IActionResult> SigningUpToCourse(int childId, int courseId)
+        {
+            var userId = GetUserId();
+
+            if (userId == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var child = await _childService.GetById(childId);
+            var course = await _courseService.GetById(courseId);
+
+            if (child != null && course != null)
+            {
+                if (User.IsInRole("Admin") ||
+                    (User.IsInRole("Parent") & child.ParentDto.UserDtoId == userId))
+                {
+                    var courseRequest = new CourseRequestDto()
+                    {
+                        ChildDtoId = child.Id,
+                        CourseDtoId = course.Id,
+                    };
+
+                    await _courseRequestService.Add(courseRequest);
+                    return RedirectToAction("Info", new { childId = child.Id });
+                }
+                TempData["ErrorMessage"] = $"Детето {child.FirstName} {child.LastName} не се регистрира в системата поради неуспешно валидиране на потребителя. ";
+            }
+
+            return RedirectToAction("Info", new { childId });
         }
 
         public async Task ParentsInViewBag()

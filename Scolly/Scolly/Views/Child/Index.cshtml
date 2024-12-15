@@ -144,7 +144,7 @@
                 </div>
                 <div class="card-buttons">
                     <a asp-controller="Child" asp-action="Info" asp-route-childId="@child.Id" class="btn btn-outline-info">Информация</a>
-                    <a asp-controller="Child" asp-action="SignInToCourse" asp-route-childId="@child.Id" class="btn btn-success">Записване на курс</a>
+                    <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@child.Id" class="btn btn-success">Записване на курс</a>
                     <a asp-controller="Child" asp-action="Edit" asp-route-childId="@child.Id" class="btn btn-warning">Редактиране</a>
                     <a href="#" onclick="confirmDelete('@child.FirstName', '@child.LastName', '@child.Id')" class="btn btn-danger">Изтриване</a>
                 </div>

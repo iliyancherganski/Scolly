@@ -64,7 +64,7 @@
                             <td>@courseRequest.ChildDto.ParentDto.UserDto.PhoneNumber</td>
                             <td>
                                 <a asp-action="Info" asp-controller="Child" asp-route-childId="@courseRequest.Id" class="btn btn-info">Инф. за дете</a>
-                                @if (!User.IsInRole("Teacher"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <a href="#" onclick="confirmDeleteRequest('@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName', '@courseRequest.Id')" class="btn btn-danger">Изтриване на заявка</a>
                                 }
@@ -81,7 +81,7 @@
                             <td>@courseRequest.ChildDto.ParentDto.UserDto.PhoneNumber</td>
                             <td>
                                 <a asp-action="Info" asp-controller="Child" asp-route-childId="@courseRequest.Id" class="btn btn-info">Инф. за дете</a>
-                                @if (!User.IsInRole("Teacher"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <a href="#" onclick="confirmDeleteRequest('@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName', '@courseRequest.Id')" class="btn btn-danger">Изтриване на заявка</a>
                                 }
@@ -98,7 +98,7 @@
                             <td>@courseRequest.ChildDto.ParentDto.UserDto.PhoneNumber</td>
                             <td>
                                 <a asp-action="Info" asp-controller="Child" asp-route-childId="@courseRequest.Id" class="btn btn-info">Инф. за дете</a>
-                                @if (!User.IsInRole("Teacher"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <a href="#" onclick="confirmDeleteRequest('@courseRequest.ChildDto.FirstName @courseRequest.ChildDto.LastName', '@courseRequest.Id')" class="btn btn-danger">Изтриване на заявка</a>
                                 }
@@ -130,9 +130,11 @@
                 window.location.href = '/Course/Delete?courseId=' + courseId;
             }
         }
+    </script>
+    <script>
         function confirmDeleteRequest(childName, requestId) {
             // Display a confirmation dialog
-            var result = confirm("Сигурни ли сте, че искате да изтриете заявката на " + ChildName + " за този курс?");
+            var result = confirm("Сигурни ли сте, че искате да изтриете заявката на " + childName + " за този курс?");
 
             // If the user clicks "OK," proceed with the deletion
             if (result) {

@@ -1,0 +1,164 @@
+﻿@using System.Globalization
+@using Scolly.Services.DTOs.Enums
+@using Scolly.Services.Data.DTOs
+@model List<CourseDto>
+
+<h1>Подаване на заяква за записване на детето @ViewBag.ChildName</h1>
+<h2>Списък с курсове</h2>
+
+<nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="--bs-bg-opacity:0;">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item" style="margin:0">
+                    <a class="nav-link"><strong>Филтрирайте по:</strong></a>
+                </li>
+                <li class="nav-item dropdown" style="margin:0">
+                    @if (ViewBag.CourseTypeId != null)
+                    {
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>Типове курс</strong></a>
+                    }
+                    else
+                    {
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Типове курс</a>
+                    }
+                    <div class="dropdown-menu" style="margin:0">
+                        <h6 class="dropdown-header">Изберете тип курс</h6>
+
+                        @foreach (var courseType in ViewBag.CourseTypes)
+                        {
+                            int index = int.Parse(courseType.Value);
+                            if (ViewBag.CourseTypeId == index)
+                            {
+                                <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-courseTypeId="@index" class="dropdown-item"><strong>@courseType.Text</strong></a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-courseTypeId="@index" class="dropdown-item">@courseType.Text</a>
+                            }
+                        }
+                    </div>
+                </li>
+                <li class="nav-item dropdown" style="margin:0">
+                    @if (ViewBag.AgeGroupId != null)
+                    {
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>Възрастови групи</strong></a>
+                    }
+                    else
+                    {
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Възрастови групи</a>
+                    }
+                    <div class="dropdown-menu" style="margin:0">
+                        <h6 class="dropdown-header">Изберете възрастова група</h6>
+
+                        @foreach (var ageGroup in ViewBag.AgeGroups)
+                        {
+                            int index = int.Parse(ageGroup.Value);
+                            if (ViewBag.AgeGroupId == index)
+                            {
+                                <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-ageGroupId="@int.Parse(ageGroup.Value)" class="dropdown-item"><strong>@ageGroup.Text</strong></a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-ageGroupId="@int.Parse(ageGroup.Value)" class="dropdown-item">@ageGroup.Text</a>
+                            }
+                        }
+                    </div>
+                </li>
+            </ul>
+            <div class="d-flex" style="margin-right:80px">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item" style="margin:0">
+                        <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" class="btn btn-outline-danger">Премахни филтри</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="card-deck">
+    @foreach (var course in Model)
+    {
+        <div class="card border-light mb-3" style="width: 18rem; margin-bottom: 20px;">
+            <div class="card-body">
+                <div>
+                    <h5 class="card-header">@course.CourseTypeDto.Name</h5>
+                </div>
+                <div>
+                    @{
+                        string dateString = $"{course.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))} - {course.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))}";
+                        if (course.StartDate > DateTime.Now)
+                        {
+                            <p class="card-title">@dateString: <strong style="color: orange">Не е започнал</strong></p>
+                        }
+                        else if (course.StartDate < DateTime.Now && course.EndDate > DateTime.Now)
+                        {
+                            <p class="card-title">@dateString: <strong style="color: green">Започнал</strong></p>
+                        }
+                        else if (course.EndDate < DateTime.Now)
+                        {
+                            <p class="card-title">@dateString: <strong style="color: red">Приключил</strong></p>
+                        }
+                    }
+                    <p class="card-title">Възрастова група: @course.AgeGroupDto.Name</p>
+                    <p class="card-title">Цена: @string.Format("{0:f2} лв.", course.Price)</p>
+                    <p class="card-title">Активно записани деца: @course.CourseRequestDtos.Count()</p>
+
+                    @if (course.TeacherDtos != null)
+                    {
+                        <p class="card-text">Учители: <strong>@($"{string.Join(", ", course.TeacherDtos.Select(x => $"{x.UserDto.FirstName} {x.UserDto.LastName}"))}")</strong></p>
+                    }
+                </div>
+                <div class="card-buttons">
+                    <a asp-controller="Child" asp-action="SigningUpToCourse" asp-route-courseId="@course.Id" asp-route-childId="@ViewBag.ChildId" class="btn btn-success">Запишете детето за курса</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div>
+    <ul class="pagination">
+        @for (int i = 1; i <= ViewBag.PageCount; i++)
+        {
+            if (ViewBag.Page == i)
+            {
+                <li class="page-item active">
+                    @{
+                        if (ViewBag.AgeGroupId != null)
+                        {
+                            <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-page="@i" asp-route-ageGroupId="@ViewBag.AgeGroupId" class="page-link">@i</a>
+                        }
+                        else if (ViewBag.CourseTypeId != null)
+                        {
+                            <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-page="@i" asp-route-courseTypeId="@ViewBag.CourseTypeId" class="page-link">@i</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-childId="@ViewBag.ChildId" asp-route-page="@i" class="page-link">@i</a>
+                        }
+                    }
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    @{
+                        if (ViewBag.AgeGroupId != null)
+                        {
+                            <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-page="@i" asp-route-ageGroupId="@ViewBag.AgeGroupId" class="page-link">@i</a>
+                        }
+                        else if (ViewBag.CourseTypeId != null)
+                        {
+                            <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-page="@i" asp-route-courseTypeId="@ViewBag.CourseTypeId" class="page-link">@i</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Child" asp-action="SignUpToCourse" asp-route-page="@i" class="page-link">@i</a>
+                        }
+                    }
+                </li>
+            }
+        }
+    </ul>
+</div>
