@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Scolly.Infrastructure.Data.Models;
 using Scolly.Services.Data.DTOs;
+using Scolly.Services.DTOs.Enums;
+using Scolly.Services.Services;
 using Scolly.Services.Services.Contracts;
 using Scolly.ViewModels.Course;
 
@@ -13,13 +16,15 @@ namespace Scolly.Controllers
     {
         private readonly ICourseService _courseService;
         private readonly IChildService _childService;
+        private readonly IParentService _parentService;
         private readonly ICourseRequestService _courseRequestService;
 
-        public CourseController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, ICourseService courseService, IChildService childService, ICourseRequestService courseRequestService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
+        public CourseController(ICityService cityService, ITeacherService teacherService, ISpecialtyService specialtyService, IAgeGroupService ageGroupService, ICourseTypeService courseTypeService, ICourseService courseService, IChildService childService, ICourseRequestService courseRequestService, IParentService parentService) : base(cityService, teacherService, specialtyService, ageGroupService, courseTypeService)
         {
             _courseService = courseService;
             _childService = childService;
             _courseRequestService = courseRequestService;
+            _parentService = parentService;
         }
 
         public async Task<IActionResult> Index(int? page,
@@ -58,7 +63,6 @@ namespace Scolly.Controllers
                 {
                     if (sortByStartDate == true)
                     {
-                        dtos = dtos.OrderBy(x => x.StartDate).ToList();
                         ViewBag.SortByStartDate = true;
                     }
                     else
@@ -75,9 +79,12 @@ namespace Scolly.Controllers
 
             foreach (var dto in dtos)
             {
-                dto.CourseRequestDtos = await _courseRequestService.GetAllRequestsOfCourse(dto.Id, true, true);
+                dto.CourseRequestDtos = await _courseRequestService.GetAllRequestsOfCourse(dto.Id, false, true);
             }
-
+            if (sortByStartDate == null)
+            {
+                dtos = dtos.OrderByDescending(x => x.CourseRequestDtos.Count(x => x.Status == RequestStatusDto.Pending)).ToList();
+            }
 
             dtos = Pagination(page, dtos, 12);
 
@@ -108,6 +115,19 @@ namespace Scolly.Controllers
             }
             var crDtos = await _courseRequestService.GetAllRequestsOfCourse(dto.Id, false);
             dto.CourseRequestDtos = crDtos.OrderBy(x => x.ChildDto.FirstName).ThenBy(x => x.ChildDto.LastName).ToList();
+
+            if (User.IsInRole("Parent"))
+            {
+                var parent = await _parentService.GetParentByUserId(GetUserId());
+                if (parent != null && crDtos.Where(x=>x.Status == RequestStatusDto.Accepted).Select(x => x.ChildDto.ParentDtoId).Contains(parent.Id))
+                {
+                    return View(dto);
+                }
+                else
+                {
+                    ViewBag.DoNotShowChildren = true;
+                }
+            }
 
             return View(dto);
         }
@@ -237,9 +257,33 @@ namespace Scolly.Controllers
             if (dto != null)
             {
                 await _courseRequestService.DeleteById(requestId);
-                return RedirectToAction("Info", new { courseId = dto.CourseDtoId});
+                return RedirectToAction("Info", new { courseId = dto.CourseDtoId });
             }
             return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ConfirmRequest(int requestId)
+        {
+            var courseRequest = await _courseRequestService.GetById(requestId);
+            await _courseRequestService.SetStatus(requestId, RequestStatusDto.Accepted);
+            if (courseRequest == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Info", new { courseId = courseRequest.CourseDtoId });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RejectRequest(int requestId)
+        {
+            var courseRequest = await _courseRequestService.GetById(requestId);
+            await _courseRequestService.SetStatus(requestId, RequestStatusDto.Rejected);
+            if (courseRequest == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Info", new { courseId = courseRequest.CourseDtoId });
         }
     }
 }

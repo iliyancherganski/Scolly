@@ -268,6 +268,7 @@ namespace Scolly.Services.Services
                         FirstName = parent.User.FirstName,
                         LastName = parent.User.LastName,
                         PhoneNumber = parent.User.PhoneNumber,
+                        Email = parent.User.Email,
                         CityDto = new CityDto() { Id = parent.User.CityId, Name = parent.User.City.Name, },
                         CityDtoId = parent.User.CityId,
                     },

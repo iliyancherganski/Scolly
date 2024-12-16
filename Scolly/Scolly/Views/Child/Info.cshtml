@@ -45,6 +45,14 @@
                             if (courseRequest.Status == RequestStatusDto.Pending)
                             {
                                 <p class="card-title">Статус на детето: <strong style="color: orange">Изчаква се потвърждение</strong></p>
+                                if (User.IsInRole("Admin"))
+                                {
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <a asp-action="ConfirmRequest" asp-controller="Course" asp-route-requestId="@courseRequest.Id" class="btn btn-outline-success"><strong>Записване</strong></a>
+                                        <a asp-action="RejectRequest" asp-controller="Course" asp-route-requestId="@courseRequest.Id" class="btn btn-outline-danger"><strong>Отхвърляне</strong></a>
+                                    </div>
+                                }
+
                             }
                             else if (courseRequest.Status == RequestStatusDto.Accepted)
                             {

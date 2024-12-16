@@ -160,7 +160,7 @@ namespace Scolly.Services.Services
             return dto;
         }
 
-        public async Task<string?> RegisterNewUser(UserDto model)
+        public async Task<string?> RegisterNewUser(UserDto model, string role)
         {
             if (await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email) == null)
             {
@@ -189,6 +189,7 @@ namespace Scolly.Services.Services
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, role);
                     return user.Id;
                 }
             }
@@ -214,11 +215,27 @@ namespace Scolly.Services.Services
         {
             email = email.ToUpper();
             var users = await _context.Users.Where(x => x.Email != null).ToListAsync();
-            if (users.FirstOrDefault(x=>x.Email.ToUpper() == email) == null)
+            if (users.FirstOrDefault(x => x.Email.ToUpper() == email) == null)
             {
                 return false;
             }
             return true;
+        }
+        public async Task<string> GreetingOfUser(string? email)
+        {
+            if (email == null)
+            {
+                return "Здравейте!";
+            }
+
+            var emailTemp = email.ToUpper();
+            var users = await _context.Users.Where(x => x.Email != null).ToListAsync();
+            var user = users.FirstOrDefault(x => x.Email.ToUpper() == emailTemp);
+            if (user != null)
+            {
+                return $"Здравейте, {user.FirstName} {user.LastName}";
+            }
+            return $"Здравейте, {emailTemp}";
         }
 
         private User CreateUser()

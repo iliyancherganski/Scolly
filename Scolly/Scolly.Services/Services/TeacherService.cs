@@ -41,17 +41,17 @@ namespace Scolly.Services.Services
                 }
             }
 
-            string? userId = await _userService.RegisterNewUser(model.UserDto);
+            string? userId = await _userService.RegisterNewUser(model.UserDto, "Teacher");
             if (userId == null)
                 throw new ArgumentException("Вече има регистриран потребител с този имейл.");
-            var user = await _context.Users.FirstOrDefaultAsync(x=>x.Id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null) return;
 
             teacher.UserId = user.Id;
             teacher.User = user;
 
             await _context.Teachers.AddAsync(teacher);
-            
+
             foreach (var s in specialties)
             {
                 var ts = new TeacherSpecialty()
@@ -80,7 +80,7 @@ namespace Scolly.Services.Services
             }
 
             var teacherCourses = await _context.TeachersCourses
-                .Include(x=>x.Course)
+                .Include(x => x.Course)
                 .Where(x => x.TeacherId == teacher.Id).ToListAsync();
 
             foreach (var tc in teacherCourses)
@@ -98,7 +98,7 @@ namespace Scolly.Services.Services
         public async Task EditById(int id, TeacherDto model)
         {
             var teacher = await _context.Teachers
-                .Include(x=>x.User)
+                .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (teacher == null) return;
             var teacherSpecialties = await _context.TeachersSpecialties.Where(x => x.TeacherId == teacher.Id).ToListAsync();
@@ -181,15 +181,25 @@ namespace Scolly.Services.Services
         public async Task<List<TeacherDto>> GetAllTeachersByCourse(int courseId)
         {
             var course = await _context.Courses
-                .Include(x=>x.TeachersCourse)
-                .ThenInclude(x=>x.Teacher)
-                .FirstOrDefaultAsync(x=>x.Id == courseId);
+                .Include(x => x.TeachersCourse)
+                .ThenInclude(x => x.Teacher)
+                .FirstOrDefaultAsync(x => x.Id == courseId);
             if (course == null)
             {
                 return new List<TeacherDto>();
             }
-            var dtos = await GetAll();
-            dtos = dtos.Where(x => x.CourseDtos.Select(x=>x.Id).Contains(course.Id)).ToList();
+
+            var dto = new TeacherDto();
+            var dtos = new List<TeacherDto>();
+            foreach (var teacherId in course.TeachersCourse.Select(x => x.TeacherId))
+            {
+                dto = await GetById(teacherId);
+                if (dto != null)
+                {
+                    dtos.Add(dto);
+                }
+            }
+
             return dtos;
         }
 
@@ -224,7 +234,7 @@ namespace Scolly.Services.Services
                 .Include(x => x.TeacherSpecialties)
                 .ThenInclude(x => x.Specialty)
                 .Include(x => x.TeacherCourses)
-                .Include(x=>x.User)
+                .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == modelId);
             if (model == null) return null;
 

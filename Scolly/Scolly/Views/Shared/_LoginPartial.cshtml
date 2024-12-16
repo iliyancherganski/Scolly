@@ -16,9 +16,8 @@
             @if (!User.IsInRole("Admin"))
             {
                 <form class="form-inline" asp-controller="User" asp-action="DirectEdit">
-                    <button type="submit" class="nav-link btn btn-link" title="Редактиране на акаунт">Здравейте, @User.Identity?.Name</button>
+                    <button type="submit" class="nav-link btn btn-link" title="Редактиране на акаунт">@await userService.GreetingOfUser(User.Identity?.Name)!</button>
                 </form>
-                @* <a class="nav-link" asp-controller="User" asp-action="Delete" title="Редактиране на акаунт">Здравейте, @User.Identity?.Name</a> *@
             }
             else
             {

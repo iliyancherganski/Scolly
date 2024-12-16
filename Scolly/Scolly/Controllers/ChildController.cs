@@ -105,6 +105,17 @@ namespace Scolly.Controllers
             var dto = await _childService.GetById(childId);
             if (dto == null) return RedirectToAction(nameof(Index));
 
+            if (User.IsInRole("Parent"))
+            {
+                var parent = await _parentService.GetParentByUserId(GetUserId());
+                if (parent != null && dto.ParentDtoId == parent.Id)
+                {
+                    dto.CourseRequestsDtos = await _courseRequestService.GetAllRequestsOfChild(childId, false);
+                    return View(dto);
+                }
+                return RedirectToAction("Index");
+            }
+
             dto.CourseRequestsDtos = await _courseRequestService.GetAllRequestsOfChild(childId, false);
             return View(dto);
         }
@@ -312,7 +323,7 @@ namespace Scolly.Controllers
                     {
                         dto.CourseRequestDtos = await _courseRequestService.GetAllRequestsOfChild(dto.Id, true, true);
                     }
-                    model = model.Where(x=>x.EndDate > DateTime.Now).OrderBy(x => x.CourseTypeDto.Name).ThenBy(x => x.AgeGroupDto.Name).ThenBy(x => x.StartDate).ToList();
+                    model = model.Where(x => x.EndDate > DateTime.Now).OrderBy(x => x.CourseTypeDto.Name).ThenBy(x => x.AgeGroupDto.Name).ThenBy(x => x.StartDate).ToList();
 
                     await SortedCourseTypeInViewBag();
                     await SortedAgeGroupInViewBag();
@@ -343,6 +354,13 @@ namespace Scolly.Controllers
                 if (User.IsInRole("Admin") ||
                     (User.IsInRole("Parent") & child.ParentDto.UserDtoId == userId))
                 {
+                    var requests = await _courseRequestService.GetAllRequestsOfChild(child.Id, false, true);
+
+                    if (requests.FirstOrDefault(x => x.CourseDtoId == course.Id && x.ChildDtoId == child.Id) != null)
+                    {
+                        return RedirectToAction("Info", new { childId = child.Id });
+                    }
+
                     var courseRequest = new CourseRequestDto()
                     {
                         ChildDtoId = child.Id,

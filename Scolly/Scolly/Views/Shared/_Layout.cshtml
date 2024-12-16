@@ -58,7 +58,6 @@
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <a class="dropdown-item" asp-area="" asp-controller="Course" asp-action="Add">Нов курс</a>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Course" asp-action="Requests">Заявки за записване на курс</a>
                                 }
 
                             </div>
@@ -67,6 +66,7 @@
                         {
 
                             if (User.IsInRole("Parent")
+                            || User.IsInRole("Teacher")
                             || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item dropdown">

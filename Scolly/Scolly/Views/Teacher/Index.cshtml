@@ -209,7 +209,7 @@
 
 @if (User.IsInRole("Admin"))
 {
-    <a asp-controller="User" asp-action="Register" asp-route-teacher="@true" class="btn btn-primary">Регистриране на нов служител</a>
+    <a asp-controller="User" asp-action="Register" asp-route-isTeacher="@true" class="btn btn-primary">Регистриране на учител</a>
 }
 
 @section Scripts {

@@ -37,8 +37,8 @@ namespace Scolly.Infrastructure.Data.Configurations
                     Id = 1,
                     AgeGroupId = 1,
                     CourseTypeId = 2,
-                    StartDate = new DateTime(2023, 10, 2),
-                    EndDate = new DateTime(2024, 1, 15),
+                    StartDate = new DateTime(2024, 10, 2),
+                    EndDate = new DateTime(2025, 1, 15),
                     Price = 200,
                     Description = "Курс по български език и литература за ученици от 5 клас, насочен към подобряване на граматиката и аналитичните умения."
                 },
@@ -48,8 +48,8 @@ namespace Scolly.Infrastructure.Data.Configurations
                     Id = 2,
                     AgeGroupId = 1,
                     CourseTypeId = 2,
-                    StartDate = new DateTime(2024, 1, 2),
-                    EndDate = new DateTime(2024, 4, 15),
+                    StartDate = new DateTime(2025, 1, 2),
+                    EndDate = new DateTime(2025, 4, 15),
                     Price = 250,
                     Description = "Задълбочен курс по български език и литература за 5 клас, с акцент върху подготовката за национални изпити."
                 },
@@ -59,8 +59,8 @@ namespace Scolly.Infrastructure.Data.Configurations
                     Id = 3,
                     AgeGroupId = 4,
                     CourseTypeId = 5,
-                    StartDate = new DateTime(2024, 1, 2),
-                    EndDate = new DateTime(2024, 6, 15),
+                    StartDate = new DateTime(2025, 1, 2),
+                    EndDate = new DateTime(2025, 6, 15),
                     Price = 630,
                     Description = "Интензивен курс по немски език за ученици от 5 до 7 клас, включващ говорене, слушане и писане."
                 },
@@ -70,7 +70,7 @@ namespace Scolly.Infrastructure.Data.Configurations
                     Id = 4,
                     AgeGroupId = 1,
                     CourseTypeId = 6,
-                    StartDate = new DateTime(2024, 10, 11),
+                    StartDate = new DateTime(2024, 12, 11),
                     EndDate = new DateTime(2025, 5, 25),
                     Price = 590,
                     Description = "Курс по френски език за начинаещи ученици от 5 клас, съсредоточен върху основните езикови умения."

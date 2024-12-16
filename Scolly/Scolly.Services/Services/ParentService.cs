@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 using Scolly.Infrastructure.Data;
 using Scolly.Infrastructure.Data.Models;
@@ -96,7 +97,7 @@ namespace Scolly.Services.Services
         {
             var parent = new Parent();
 
-            string? userId = await _userService.RegisterNewUser(model.UserDto);
+            string? userId = await _userService.RegisterNewUser(model.UserDto, "Parent");
             if (userId == null)
                 throw new ArgumentException("Вече има регистриран потребител с този имейл.");
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);

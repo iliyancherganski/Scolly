@@ -132,7 +132,18 @@
 <div class="card-deck">
     @foreach (var course in Model)
     {
-        <div class="card border-light mb-3" style="width: 18rem; margin-bottom: 20px;">
+        int signUpsCount = course.CourseRequestDtos.Where(x => x.Status == RequestStatusDto.Accepted).Count();
+        int requestCount = course.CourseRequestDtos.Where(x => x.Status == RequestStatusDto.Pending).Count();
+        string cssClass = "card border-info mb-3";
+        string cssStyle = "";
+
+        if (requestCount > 0 && User.IsInRole("Admin"))
+        {
+            cssClass = "card border-warning mb-3";
+            cssStyle = "background-color: #fdf2df";
+        }
+
+        <div class="@cssClass" style="width: 18rem; margin-bottom: 20px; @cssStyle">
             <div class="card-body">
                 <div>
                     <h5 class="card-header">@course.CourseTypeDto.Name</h5>
@@ -155,8 +166,11 @@
                     }
                     <p class="card-title">Възрастова група: @course.AgeGroupDto.Name</p>
                     <p class="card-title">Цена: @string.Format("{0:f2} лв.", course.Price)</p>
-                    <p class="card-title">Активно записани деца: @course.CourseRequestDtos.Count()</p>
-
+                    <p class="card-title">Активно записани деца: @signUpsCount</p>
+                    @if (User.IsInRole("Admin") && requestCount > 0)
+                    {
+                        <p class="card-title">Заявки за записване: <span class="badge bg-primary rounded-pill">@requestCount</span></p>
+                    }
                     @if (course.TeacherDtos != null)
                     {
                         <p class="card-text">Учители: <strong>@($"{string.Join(", ", course.TeacherDtos.Select(x => $"{x.UserDto.FirstName} {x.UserDto.LastName}"))}")</strong></p>

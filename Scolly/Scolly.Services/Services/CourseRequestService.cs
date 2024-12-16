@@ -126,6 +126,7 @@ namespace Scolly.Services.Services
                             Id = x.Id,
                             ChildDtoId = child.Id,
                             CourseDtoId = x.CourseId,
+                            Status = RequestStatusDto.Accepted,
                         })
                         .ToListAsync();
                 }
@@ -137,6 +138,7 @@ namespace Scolly.Services.Services
                             Id = x.Id,
                             ChildDtoId = child.Id,
                             CourseDtoId = x.CourseId,
+                            Status = x.Status == RequestStatus.Accepted ? RequestStatusDto.Accepted : x.Status == RequestStatus.Pending ? RequestStatusDto.Pending : RequestStatusDto.Rejected,
                         })
                         .ToListAsync();
                 }
@@ -154,7 +156,6 @@ namespace Scolly.Services.Services
             if (raw)
             {
                 var dtosRaw = new List<CourseRequestDto>();
-
                 if (onlyAccepted)
                 {
                     return dtosRaw = await _context.CourseRequests.Where(x => x.CourseId == course.Id)
@@ -164,6 +165,7 @@ namespace Scolly.Services.Services
                             Id = x.Id,
                             ChildDtoId = x.ChildId,
                             CourseDtoId = course.Id,
+                            Status = RequestStatusDto.Accepted,
                         })
                         .ToListAsync();
                 }
@@ -175,6 +177,7 @@ namespace Scolly.Services.Services
                             Id = x.Id,
                             ChildDtoId = x.ChildId,
                             CourseDtoId = course.Id,
+                            Status = x.Status == RequestStatus.Accepted ? RequestStatusDto.Accepted : x.Status == RequestStatus.Pending ? RequestStatusDto.Pending : RequestStatusDto.Rejected,
                         })
                         .ToListAsync();
                 }
@@ -239,7 +242,8 @@ namespace Scolly.Services.Services
                         LastName = child.Parent.User.LastName,
                         PhoneNumber = child.Parent.User.PhoneNumber,
                     }
-                }
+                },
+                ParentDtoId = child.Parent.Id,
             };
 
             dto.ChildDtoId = childDto.Id;
@@ -277,6 +281,11 @@ namespace Scolly.Services.Services
         {
             var model = await _context.CourseRequests.FirstOrDefaultAsync(x => x.Id == modelId);
             if (model == null) return;
+
+            if (model.Status == RequestStatus.Accepted || model.Status == RequestStatus.Rejected)
+            {
+                return;
+            }
 
             if (status == RequestStatusDto.Accepted)
                 model.Status = RequestStatus.Accepted;
