@@ -34,6 +34,27 @@
 						<h5 class="card-header">@course.CourseTypeDto.Name</h5>
 					</div>
 					<div>
+						@{
+							TimeSpan totalDuration = course.EndDate - course.StartDate;
+							TimeSpan elapsedDuration = DateTime.Now - course.StartDate;
+
+							string progressBarCssClass = "progress-bar progress-bar-striped progress-bar-animated bg-success";
+
+							int percentage = (int)((elapsedDuration.TotalSeconds / totalDuration.TotalSeconds) * 100);
+
+							if (DateTime.Now < course.StartDate)
+								percentage = 0;
+
+							if (DateTime.Now > course.EndDate)
+							{
+								percentage = 100;
+								progressBarCssClass = "progress-bar progress-bar-striped bg-success";
+							}
+
+							<div class="progress">
+								<div class="@progressBarCssClass" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%;"></div>
+							</div>
+						}
 						<p class="card-title">@course.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG")) - @course.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))</p>
 						<p class="card-title">Възрастова група: @course.AgeGroupDto.Name</p>
 						<p class="card-title">Активно записани деца: @course.CourseRequestDtos.Count()</p>
@@ -50,11 +71,11 @@
 		}
 	</div>
 }
-@* @if (User.IsInRole("Admin") || (User.IsInRole("Teacher") && User.Identity?.Name == Model.User.Email))
+@if (User.IsInRole("Admin") || (User.IsInRole("Teacher") && User.Identity?.Name == Model.UserDto.Email))
 {
-	<a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" asp-route-role="Teacher" class="btn btn-warning">Редактиране</a>
-	<a href="#" onclick="confirmDelete('@Model.User.FirstName', '@Model.User.LastName', '@Model.Id')" class="btn btn-danger">Изтриване</a>
-} *@
+	<a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" asp-route-isTeacher="@true" class="btn btn-warning">Редактиране</a>
+	<a href="#" onclick="confirmDelete('@Model.UserDto.FirstName', '@Model.UserDto.LastName', '@Model.Id')" class="btn btn-danger">Изтриване</a>
+} 
 <a asp-controller="Teacher" asp-action="Index" class="btn btn-primary">Всички учители</a>
 
 @section Scripts{

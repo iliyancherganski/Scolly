@@ -1,7 +1,11 @@
 ﻿@using Scolly.Services.Data.DTOs;
 @model List<CityDto>;
 
-<h2>Списък с градове</h2>
+<h2>Списък с градове
+    <div class="text-center">
+        <a asp-action="Add" class="btn btn-primary">Добавете нова специалност</a>
+    </div>
+</h2>
 
 @if (TempData["ErrorMessage"] != null)
 {
@@ -125,9 +129,7 @@
     </ul>
 </div>
 
-<div class="text-center">
-    <a asp-action="Add" class="btn btn-primary">Добавете нова специалност</a>
-</div>
+
 
 @section Scripts {
     <script>

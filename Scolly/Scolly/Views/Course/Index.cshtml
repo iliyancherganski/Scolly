@@ -3,7 +3,16 @@
 @using Scolly.Services.Data.DTOs
 @model List<CourseDto>
 
-<h2>Списък с курсове</h2>
+<h2>
+    Списък с курсове 
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="text-center">
+            <a asp-controller="Course" asp-action="Add" class="btn btn-primary">Създаване на нов курс</a>
+       </div>
+    }
+</h2>
+
 <nav class="navbar navbar-expand-lg bg-light" data-bs-theme="light" style="--bs-bg-opacity:0; padding:0;">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarColor01">
@@ -149,8 +158,29 @@
                     <h5 class="card-header">@course.CourseTypeDto.Name</h5>
                 </div>
                 <div>
+
                     @{
                         string dateString = $"{course.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))} - {course.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))}";
+
+                        TimeSpan totalDuration = course.EndDate - course.StartDate;
+                        TimeSpan elapsedDuration = DateTime.Now - course.StartDate;
+
+                        string progressBarCssClass = "progress-bar progress-bar-striped progress-bar-animated bg-success";
+
+                        int percentage = (int)((elapsedDuration.TotalSeconds / totalDuration.TotalSeconds) * 100);
+
+                        if (DateTime.Now < course.StartDate)
+                            percentage = 0;
+
+                        if (DateTime.Now > course.EndDate)
+                        {
+                            percentage = 100;
+                            progressBarCssClass = "progress-bar progress-bar-striped bg-success";
+                        }
+
+                        <div class="progress">
+                            <div class="@progressBarCssClass" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%;"></div>
+                        </div>
                         if (course.StartDate > DateTime.Now)
                         {
                             <p class="card-title">@dateString: <strong style="color: orange">Не е започнал</strong></p>
@@ -163,6 +193,7 @@
                         {
                             <p class="card-title">@dateString: <strong style="color: red">Приключил</strong></p>
                         }
+
                     }
                     <p class="card-title">Възрастова група: @course.AgeGroupDto.Name</p>
                     <p class="card-title">Цена: @string.Format("{0:f2} лв.", course.Price)</p>
@@ -258,10 +289,7 @@
         }
     </ul>
 </div>
-@if (User.IsInRole("Admin"))
-{
-    <a asp-controller="Course" asp-action="Add" class="btn btn-primary">Създаване на нов курс</a>
-}
+
 
 @section Scripts {
     <script>

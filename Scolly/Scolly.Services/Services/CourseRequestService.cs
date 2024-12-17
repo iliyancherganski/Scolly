@@ -231,6 +231,7 @@ namespace Scolly.Services.Services
                 Id = child.Id,
                 FirstName = child.FirstName,
                 LastName = child.LastName,
+                PhoneNumber = child.PhoneNumber,
                 ParentDto = new ParentDto()
                 {
                     Id = child.Parent.Id,

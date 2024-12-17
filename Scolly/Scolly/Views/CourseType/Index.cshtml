@@ -1,7 +1,11 @@
 ﻿@using Scolly.Services.Data.DTOs;
 @model List<CourseTypeDto>;
 
-<h2>Списък с типове курс</h2>
+<h2>Списък с типове курс
+    <div class="text-center">
+        <a asp-action="Add" asp-controller="CourseType" class="btn btn-primary">Добавете нова възрастова група</a>
+    </div>
+</h2>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -122,10 +126,6 @@
             }
         }
     </ul>
-</div>
-
-<div class="text-center">
-    <a asp-action="Add" asp-controller="CourseType" class="btn btn-primary">Добавете нова възрастова група</a>
 </div>
 
 @section Scripts {

@@ -1,7 +1,11 @@
 ﻿@using Scolly.Services.Data.DTOs;
 @model List<AgeGroupDto>;
 
-<h2>Списък с възрастови групи</h2>
+<h2>Списък с възрастови групи
+    <div class="text-center">
+        <a asp-action="Add" asp-controller="AgeGroup" class="btn btn-primary">Добавете нова възрастова група</a>
+    </div>
+</h2>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
@@ -124,9 +128,7 @@
     </ul>
 </div>
 
-<div class="text-center">
-    <a asp-action="Add" asp-controller="AgeGroup" class="btn btn-primary">Добавете нова възрастова група</a>
-</div>
+
 
 @section Scripts {
     <script>

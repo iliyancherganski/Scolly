@@ -18,7 +18,7 @@
     {
         <p>Телефон (на детето): @Model.PhoneNumber</p>
     }
-    <p>Родител: <strong>@Model.ParentDto.UserDto.FirstName @Model.ParentDto.UserDto.LastName</strong> - Тел.: @Model.ParentDto.UserDto.PhoneNumber</p>
+    <p>Родител : <strong>@Model.ParentDto.UserDto.FirstName @Model.ParentDto.UserDto.LastName</strong> - Тел.: <strong>@Model.ParentDto.UserDto.PhoneNumber</strong> (@Model.ParentDto.UserDto.Email)</p>
     @{
         int courseCount = Model.CourseRequestsDtos.Where(x => x.Status == RequestStatusDto.Accepted).Count();
         string courseString = (courseCount == 1) ? "курс" : "курса";
@@ -42,6 +42,27 @@
                     </div>
                     <div>
                         @{
+                            TimeSpan totalDuration = courseRequest.CourseDto.EndDate - courseRequest.CourseDto.StartDate;
+                            TimeSpan elapsedDuration = DateTime.Now - courseRequest.CourseDto.StartDate;
+
+                            string progressBarCssClass = "progress-bar progress-bar-striped progress-bar-animated bg-success";
+
+                            int percentage = (int)((elapsedDuration.TotalSeconds / totalDuration.TotalSeconds) * 100);
+
+                            if (DateTime.Now < courseRequest.CourseDto.StartDate)
+                                percentage = 0;
+
+                            if (DateTime.Now > courseRequest.CourseDto.EndDate)
+                            {
+                                percentage = 100;
+                                progressBarCssClass = "progress-bar progress-bar-striped bg-success";
+                            }
+
+                            <div class="progress">
+                                <div class="@progressBarCssClass" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%;"></div>
+                            </div>
+                        }
+                        @{
                             if (courseRequest.Status == RequestStatusDto.Pending)
                             {
                                 <p class="card-title">Статус на детето: <strong style="color: orange">Изчаква се потвърждение</strong></p>
@@ -63,6 +84,8 @@
                                 <p class="card-title">Статус на детето: <strong style="color: red">Отхвърлена заявка за записване</strong></p>
                             }
                         }
+                        
+
                         <p class="card-title">@courseRequest.CourseDto.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG")) - @courseRequest.CourseDto.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))</p>
                         <p class="card-title">Възрастова група: @courseRequest.CourseDto.AgeGroupDto.Name</p>
                     </div>

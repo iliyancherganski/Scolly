@@ -5,11 +5,21 @@
 @{
     if (User.IsInRole("Admin"))
     {
-        <h2>Всички деца</h2>
+        <h2>
+            Всички деца
+            <div class="text-center">
+                <a asp-controller="Child" asp-action="Add" class="btn btn-primary">Регистация на дете</a>
+            </div>
+        </h2>
     }
     else if (User.IsInRole("Parent"))
     {
-        <h2>Вашите деца</h2>
+        <h2>
+            Вашите деца
+            <div class="text-center">
+                <a asp-controller="Child" asp-action="Add" class="btn btn-primary">Регистация на дете</a>
+            </div>
+        </h2>
     }
 }
 
@@ -211,7 +221,7 @@
 {
     <a asp-controller="Child" asp-action="Add" class="btn btn-primary">Регистация на дете</a>
 }
-@section Scripts{
+@section Scripts {
     <script>
         function confirmDelete(firstName, lastName, childId) {
             // Display a confirmation dialog

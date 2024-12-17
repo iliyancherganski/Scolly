@@ -86,6 +86,28 @@
                 </div>
                 <div>
                     @{
+                        TimeSpan totalDuration = course.EndDate - course.StartDate;
+                        TimeSpan elapsedDuration = DateTime.Now - course.StartDate;
+
+                        string progressBarCssClass = "progress-bar progress-bar-striped progress-bar-animated bg-success";
+
+                        int percentage = (int)((elapsedDuration.TotalSeconds / totalDuration.TotalSeconds) * 100);
+
+                        if (DateTime.Now < course.StartDate)
+                            percentage = 0;
+
+                        if (DateTime.Now > course.EndDate)
+                        {
+                            percentage = 100;
+                            progressBarCssClass = "progress-bar progress-bar-striped bg-success";
+                        }
+
+                        <div class="progress">
+                            <div class="@progressBarCssClass" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: @percentage%;"></div>
+                        </div>
+                    }
+
+                    @{
                         string dateString = $"{course.StartDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))} - {course.EndDate.ToString("MMMM dd, yyyy", new CultureInfo("bg-BG"))}";
                         if (course.StartDate > DateTime.Now)
                         {
