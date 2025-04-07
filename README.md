@@ -83,3 +83,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - In the <i>appsettings.json</i> file, located in <i>Scolly/Scolly/appsettings.json</i>, enter your connection string in the quotes of <i>DefaultConnection</i> (your database could be named "<i>Scolly</i>"): <strong> "DefaultConnection": "Your Connection String"</strong>
 - In <i>Package Manager Console</i>, set the <i>Default project</i> to <strong><i>Scolly.Infrastructure</i></strong>, and run the command <strong>Update-Database</strong> to apply the migrations to the database. The application has pre-created sample data in the database - Registrations, Courses, and more.
 - Start the project (Build).
+### 🔐 Test Accounts
+- Admin:
+  - Email: admin@admin.bg
+  - Password: Admin123!
+- Teachers - 5 registered teacher accounts
+  - Emails: teacher1@gmail.com, teacher2@gmail.com, teacher3@gmail.com, teacher4@gmail.com, teacher5@gmail.com
+  - Passwords: Teacher123!
+- Parents - 5 registered parent account
+  - Emails: parent1@gmail.com, parent2@gmail.com, parent3@gmail.com, parent4@gmail.com, parent5@gmail.com
+  - Passwords: Parent123!
