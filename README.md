@@ -74,10 +74,6 @@ Parents manage their children's course enrollments and can:
 - Admins create and configure courses (schedule, pricing, description, etc.), manage enrolled students within their courses.
 - Teachers view their courses information, including registered/unregistered children.
 
-## 📚 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 📝 How to run the application
 - Download or clone the solution (the application code);
 - In the <i>appsettings.json</i> file, located in <i>Scolly/Scolly/appsettings.json</i>, enter your connection string in the quotes of <i>DefaultConnection</i> (your database could be named "<i>Scolly</i>"): <strong> "DefaultConnection": "Your Connection String"</strong>
